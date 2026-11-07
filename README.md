@@ -14,7 +14,7 @@
 | --- | --- | --- | --- |
 | 优惠看板 | [羊毛看板](优惠看板/羊毛看板.md) | 可复制提示词 | 未部署；要求每 2 小时刷新、保留近 7 天 |
 | 社区监控 | [草榴社区](社区监控/草榴社区.md) · [配套代码](社区监控/草榴社区代码/README.md) | 过程记录、5 个 HTML 页面、1024RegisterTool 历史源码 | 独立归档，未运行或部署 |
-| 视频创作 | [无限画布](无限画布/README.md) | 教程 HTML 页面：Muse＋BeefTV＋muse2api 从角色图到视频成片 | 已整理，未在本机验证部署 |
+| 视频创作 | [无限画布](无限画布/README.md) | 教程 Markdown 页面：Muse＋BeefTV＋muse2api 从角色图到视频成片 | 已整理，未在本机验证部署 |
 
 ## 如何使用
 
@@ -60,4 +60,4 @@
 
 ## English
 
-A documentation library containing two personal projects and 300 inherited usage ideas across 15 categories. These are prompts, historical notes and limitations—not 300 installable or individually verified skills. Start with the [full index](技能目录/README.md). Original IDs are retained; some misplaced topics have been recategorized. See [source attribution](来源说明.md) for the original collection.
+A documentation library containing three personal projects and 300 inherited usage ideas across 15 categories. These are prompts, historical notes and limitations—not 300 installable or individually verified skills. Start with the [full index](技能目录/README.md). Original IDs are retained; some misplaced topics have been recategorized. See [source attribution](来源说明.md) for the original collection.
