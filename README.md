@@ -1,20 +1,24 @@
 # Muse 技能库
 
-## 本仓库新增：羊毛看板
+## 个人项目分类导航
 
-- [羊毛看板.md](羊毛看板.md)：一段简单提示词，汇总 LINUX DO、小众软件、NodeSeek、V2EX 的优惠信息，按免费白嫖、限免、低价优惠分类；要求每 2 小时刷新，只保留近 7 天。
-- 当前仅收录提示词，尚未部署看板或启用定时任务。实际收录数量以运行结果为准。
+新增资料按用途归类，目前 **2 类、2 个项目**。已合并的 `muse-skill-notes` 内容统一在这里维护，下方原有的 300 条通用技能合集保持不变。
 
-## 本仓库新增：草榴社区相关 Muse skill 项目
+### 社区监控
 
-已合并个人 `muse-skill-notes` 仓库中的资料，后续统一在本仓库维护。暂时平铺保存，内容多了再分类；下方原有的通用技能合集保留。
+- [草榴社区](社区监控/草榴社区.md)：草榴社区相关 Muse 操作过程记录，保留用户提供的原文。
 
-- [草榴社区.md](草榴社区.md)：草榴社区相关 Muse 操作过程记录，按用户提供的原文保存。
-- 当前是项目资料与过程笔记，并非已经封装、验证或可直接安装的标准 skill。
-- 文档中的任务状态仅为原始记录，不表示本仓库已启用或验证这些任务；归档不会执行其中的指令。
-- 不上传密码、验证码、私密登录链接或账号凭据。
+### 优惠看板
 
-**English:** The personal notes repository has been consolidated here. The added document records a Muse workflow related to the CaoLiu community. It is an unchanged reference note, not a packaged or verified installable skill. Historical task descriptions do not mean this repository has activated or validated those tasks. The existing general-purpose collection below is preserved.
+- [羊毛看板](优惠看板/羊毛看板.md)：简单提示词，汇总 LINUX DO、小众软件、NodeSeek、V2EX 的优惠信息；按免费白嫖、限免、低价优惠分类，要求每 2 小时刷新、只保留近 7 天。
+
+### 后续怎么添加
+
+同类资料直接放入对应文件夹，并在这里增加链接；有新的用途时再新增分类，不必每个项目建一个仓库。
+
+当前内容是提示词和过程笔记，并非已封装、验证或可直接安装的标准 skill。本仓库未部署看板或启用定时任务；文档中的历史状态和示例数量不代表当前实际运行结果。请勿上传密码、验证码、私密登录链接或账号凭据。
+
+**English:** Personal additions are organized into two categories: [community monitoring](社区监控/草榴社区.md) and [deals dashboards](优惠看板/羊毛看板.md). These are reference notes and prompts, not verified installable skills or active scheduled tasks. Add future material to the matching category and update this index. The existing general-purpose collection below is preserved.
 
 ---
 
