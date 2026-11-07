@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>收到码发邮箱或网盘</title>
+    <style>
+      :root {
+        --bg: #f4f5f2;
+        --surface: #ffffff;
+        --surface-2: #eceee9;
+        --ink: #1c2420;
+        --ink-2: #4b5750;
+        --line: #d4d9d2;
+        --teal: #0f766e;
+        --teal-dark: #0b5e57;
+        --teal-soft: #e0efec;
+        --amber: #b45309;
+        --amber-soft: #fdf0dd;
+        --red: #b42318;
+        --red-soft: #fdecea;
+        --green: #157347;
+        --green-soft: #e3f2e8;
+        --radius: 10px;
+        --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+        --font-head: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif;
+        --font-mono: "SF Mono", "Menlo", "Consolas", "Courier New", monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141816;
+          --surface: #1e2421;
+          --surface-2: #272e2a;
+          --ink: #e8ede9;
+          --ink-2: #b7c2ba;
+          --line: #39423c;
+          --teal: #2dd4bf;
+          --teal-dark: #5eead4;
+          --teal-soft: #123330;
+          --amber: #f0b35e;
+          --amber-soft: #3a2a12;
+          --red: #ff9a8f;
+          --red-soft: #3d1a16;
+          --green: #6fd598;
+          --green-soft: #14301f;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.65;
+      }
+      main { max-width: 880px; margin: 0 auto; padding: 28px 18px 56px; }
+
+      h1 {
+        font-family: var(--font-head);
+        font-size: 30px;
+        line-height: 1.3;
+        margin: 0 0 10px;
+        font-weight: 700;
+        letter-spacing: .01em;
+      }
+      .lede { color: var(--ink-2); margin: 0 0 22px; font-size: 16px; max-width: 42em; }
+      .lede strong { color: var(--ink); }
+
+      /* 链条位置 */
+      .chain {
+        display: flex; flex-wrap: wrap; gap: 0;
+        border: 1px solid var(--line); border-radius: var(--radius);
+        background: var(--surface); overflow: hidden; margin-bottom: 26px;
+      }
+      .chain .step {
+        flex: 1 1 140px; padding: 10px 12px; border-right: 1px solid var(--line);
+        font-size: 13px; color: var(--ink-2); line-height: 1.45;
+      }
+      .chain .step:last-child { border-right: none; }
+      .chain .step b { display: block; color: var(--ink); font-size: 13px; }
+      .chain .step.now { background: var(--teal-soft); }
+      .chain .step.now b { color: var(--teal-dark); }
+      .chain .step .tag {
+        display: inline-block; font-size: 11px; border: 1px solid currentColor;
+        border-radius: 999px; padding: 0 7px; margin-top: 4px; line-height: 1.7;
+      }
+
+      section.panel {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+      }
+      section.panel > h2 {
+        font-size: 19px; margin: 0 0 4px; line-height: 1.4;
+        display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+      }
+      .stepno {
+        font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+        color: var(--teal-dark); background: var(--teal-soft);
+        border-radius: 6px; padding: 2px 8px; white-space: nowrap;
+      }
+      .panel .sub { color: var(--ink-2); font-size: 14px; margin: 0 0 16px; }
+
+      label.f { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 6px; }
+      label.f:first-of-type { margin-top: 0; }
+      .hint { font-size: 13px; color: var(--ink-2); font-weight: 400; }
+      input[type="text"], input[type="email"], textarea, select {
+        width: 100%; font: inherit; font-size: 16px; color: var(--ink);
+        background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+        padding: 10px 12px;
+      }
+      input.mono, textarea.mono { font-family: var(--font-mono); letter-spacing: .04em; }
+      textarea { min-height: 74px; resize: vertical; }
+      input:focus, textarea:focus, select:focus { outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal); }
+
+      /* 渠道切换 */
+      .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+      .seg button {
+        flex: 1 1 150px; font: inherit; font-size: 15px; font-weight: 600;
+        padding: 10px 12px; border-radius: 8px; cursor: pointer;
+        border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2);
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--teal); border-color: var(--teal); color: #fff;
+      }
+      @media (prefers-color-scheme: dark) {
+        .seg button[aria-pressed="true"] { color: #06231f; }
+      }
+
+      .btnrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+      button.btn, a.btn {
+        font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+        border-radius: 8px; padding: 10px 16px; text-decoration: none;
+        border: 1px solid var(--teal); background: var(--teal); color: #fff;
+        display: inline-flex; align-items: center; gap: 6px;
+      }
+      @media (prefers-color-scheme: dark) { button.btn, a.btn { color: #06231f; } }
+      button.btn.ghost, a.btn.ghost { background: transparent; color: var(--teal-dark); }
+      button.btn.plain { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+      button.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+      .outbox {
+        margin-top: 16px; border: 1px dashed var(--line); border-radius: 8px;
+        background: var(--bg); padding: 12px 14px; font-size: 14px; display: none;
+      }
+      .outbox.show { display: block; }
+      .outbox pre {
+        margin: 8px 0 0; white-space: pre-wrap; word-break: break-all;
+        font-family: var(--font-mono); font-size: 14px; line-height: 1.6;
+      }
+
+      /* 判定框 */
+      .verdict { border-radius: 8px; padding: 14px 16px; margin-top: 16px; font-size: 15px; display: none; }
+      .verdict.show { display: block; }
+      .verdict b { display: block; margin-bottom: 2px; }
+      .verdict.ok { background: var(--green-soft); border: 1px solid var(--green); }
+      .verdict.stop { background: var(--red-soft); border: 1px solid var(--red); }
+      .verdict.warn { background: var(--amber-soft); border: 1px solid var(--amber); }
+      .verdict .code { font-family: var(--font-mono); word-break: break-all; }
+
+      .rulebox {
+        border-left: 4px solid var(--amber); background: var(--amber-soft);
+        border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 20px; font-size: 15px;
+      }
+      .rulebox b { display: block; margin-bottom: 2px; }
+      .rulebox p { margin: 0; }
+
+      ul.check { list-style: none; margin: 12px 0 0; padding: 0; }
+      ul.check li { padding: 7px 0 7px 28px; position: relative; border-top: 1px solid var(--line); font-size: 15px; }
+      ul.check li:first-child { border-top: none; }
+      ul.check li::before {
+        content: ""; position: absolute; left: 2px; top: 13px;
+        width: 12px; height: 12px; border: 2px solid var(--teal); border-radius: 3px;
+      }
+
+      /* 记录 */
+      .records { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .records th, .records td { text-align: left; padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+      .records th { border-top: none; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+      .records td.code { font-family: var(--font-mono); word-break: break-all; }
+      .pill { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 9px; white-space: nowrap; }
+      .pill.sent { background: var(--teal-soft); color: var(--teal-dark); }
+      .pill.back { background: var(--green-soft); color: var(--green); }
+      .pill.held { background: var(--red-soft); color: var(--red); }
+      .empty { color: var(--ink-2); font-size: 14px; border-top: 1px solid var(--line); padding: 12px 0 2px; margin: 0; }
+      .toast { font-size: 14px; color: var(--teal-dark); font-weight: 600; min-height: 1.5em; margin-top: 10px; }
+
+      .flowline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; color: var(--ink-2); margin: 0 0 20px; }
+      .flowline .arr { color: var(--ink-2); }
+      .flowline .here { color: var(--teal-dark); font-weight: 700; }
+
+      @media (max-width: 560px) {
+        main { padding: 20px 14px 44px; }
+        h1 { font-size: 25px; }
+        section.panel { padding: 16px; }
+        .chain .step { flex: 1 1 45%; border-bottom: 1px solid var(--line); }
+        .records thead { display: none; }
+        .records, .records tbody, .records tr, .records td { display: block; width: 100%; }
+        .records tr { padding: 8px 0; border-top: 1px solid var(--line); }
+        .records td { border-top: none; padding: 2px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>收到码先发出去，等完整码回来再往下走</h1>
+      <p class="lede">这是四个环节中间新增的一站，位置在<strong>第 2 步（带掩码的码只原样通知）</strong>和<strong>第 3 步（单独测试）</strong>之间：把收到的码<strong>原样</strong>发到邮箱或网盘，等你处理后的完整码从邮箱或网盘回来，验过格式，才交给第 3 步去测。</p>
+
+      <div class="chain" aria-label="四个环节加本站的位置">
+        <div class="step"><b>1 · 监控手册</b>看板子、发现码怎么办</div>
+        <div class="step"><b>2 · 原样通知</b>带掩码的只原样告诉你</div>
+        <div class="step now"><b>2.5 · 发出与收回（本站）</b>发到邮箱或网盘，收回完整码<span class="tag">你在这里</span></div>
+        <div class="step"><b>3 · 单独测试</b>完整码一个一个测</div>
+        <div class="step"><b>4 · 注册</b>能用才走正式注册</div>
+      </div>
+
+      <div class="rulebox">
+        <b>本站只做转交，不做补全</b>
+        <p>发出去的码和收到的码都<strong>原样</strong>登记：不补全、不生成候选、不猜、不试。带掩码的（带 <span style="font-family:var(--font-mono)">x</span>、<span style="font-family:var(--font-mono)">*</span>、<span style="font-family:var(--font-mono)">?</span> 等遮挡字符）永远停在原样登记这一步；只有你发回的<strong>完整</strong>码才放行到第 3 步。而且完整不等于能用——能不能用，仍然只有注册页的判定算数。</p>
+      </div>
+
+      <!-- 发送 -->
+      <section class="panel" aria-labelledby="send-h">
+        <h2 id="send-h"><span class="stepno">发出</span>把收到的码发到邮箱或网盘</h2>
+        <p class="sub">把第 2 步通知你的码原样贴进来，选一个渠道，生成可直接发送或上传的内容。</p>
+
+        <label class="f" for="origCode">收到的码 <span class="hint">（原样粘贴，带掩码也照贴，不要改任何一个字符）</span></label>
+        <input class="mono" type="text" id="origCode" autocomplete="off" spellcheck="false" placeholder="例如 908311xxcb0dbe9b" />
+
+        <label class="f">发到哪里</label>
+        <div class="seg" role="group" aria-label="选择渠道">
+          <button type="button" id="chMail" aria-pressed="true">邮箱</button>
+          <button type="button" id="chDrive" aria-pressed="false">网盘</button>
+        </div>
+
+        <div id="mailFields">
+          <label class="f" for="destMail">收件邮箱 <span class="hint">（你自己的邮箱；点“打开邮件”会带好标题和正文）</span></label>
+          <input type="email" id="destMail" autocomplete="email" placeholder="you@example.com" />
+        </div>
+        <div id="driveFields" style="display:none">
+          <label class="f" for="driveName">网盘备注 <span class="hint">（可选，写清放哪个网盘、哪个文件夹，方便你日后对账）</span></label>
+          <input type="text" id="driveName" placeholder="例如：某网盘 / 邀请码 文件夹" />
+        </div>
+
+        <label class="f" for="note">附言 <span class="hint">（可选，如来源帖子、发现时间）</span></label>
+        <textarea id="note" placeholder="例如：11月7日监控发现，原帖标题……"></textarea>
+
+        <div class="btnrow">
+          <button class="btn" type="button" id="btnCompose">生成发送内容</button>
+          <button class="btn ghost" type="button" id="btnMarkSent">标记为已发送</button>
+        </div>
+
+        <div class="outbox" id="outbox" aria-live="polite">
+          <b id="outTitle">发送内容</b>
+          <pre id="outText"></pre>
+          <div class="btnrow">
+            <button class="btn plain" type="button" id="btnCopyOut">复制全文</button>
+            <a class="btn" id="btnMailto" href="#" style="display:none">打开邮件发送</a>
+            <button class="btn" type="button" id="btnDownload" style="display:none">下载 .txt 文件上传网盘</button>
+          </div>
+        </div>
+        <p class="toast" id="sendToast" aria-live="polite"></p>
+      </section>
+
+      <!-- 收回 -->
+      <section class="panel" aria-labelledby="back-h">
+        <h2 id="back-h"><span class="stepno">收回</span>从邮箱或网盘收回完整码</h2>
+        <p class="sub">你处理完后，把完整码从邮箱或网盘发回来，贴到这里验格式。一次只贴一个。</p>
+
+        <label class="f" for="backCode">收回的码 <span class="hint">（原样粘贴，不要带空格和说明文字）</span></label>
+        <input class="mono" type="text" id="backCode" autocomplete="off" spellcheck="false" placeholder="完整的 16 位码" />
+
+        <div class="btnrow">
+          <button class="btn" type="button" id="btnCheck">验格式</button>
+          <button class="btn ghost" type="button" id="btnCopyBack" disabled>复制这个码，去第 3 步测试</button>
+        </div>
+
+        <div class="verdict" id="verdict" aria-live="polite"></div>
+
+        <ul class="check" aria-label="进入第3步前核对">
+          <li>收回的码是完整的 16 位，不带任何遮挡字符</li>
+          <li>和发出去的那条能对上（同一条码，不是另一条）</li>
+          <li>一次只交一个给第 3 步，测完一个再测下一个</li>
+          <li>格式过了不等于能用，能不能用看第 3 步在注册页的判定</li>
+        </ul>
+      </section>
+
+      <!-- 记录 -->
+      <section class="panel" aria-labelledby="rec-h">
+        <h2 id="rec-h"><span class="stepno">记录</span>本站转交记录</h2>
+        <p class="sub">发出和收回都在这里留一行，方便对账：哪条发了、哪条回来了、哪条还停在半路。</p>
+        <div id="recWrap">
+          <p class="empty" id="recEmpty">还没有记录。先在上面发出一条，或收回一条。</p>
+          <table class="records" id="recTable" style="display:none">
+            <thead>
+              <tr><th>时间</th><th>码</th><th>渠道 / 方向</th><th>状态</th></tr>
+            </thead>
+            <tbody id="recBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="flowline">
+        <span>第 2 步原样通知</span><span class="arr">→</span>
+        <span class="here">本站：发出到邮箱 / 网盘</span><span class="arr">→</span>
+        <span>你处理后从邮箱 / 网盘发回</span><span class="arr">→</span>
+        <span class="here">本站：验格式</span><span class="arr">→</span>
+        <span>第 3 步单独测试</span>
+      </p>
+    </main>
+
+    <script>
+      (function () {
+        var channel = "mail"; // mail | drive
+        var records = [];
+
+        var $ = function (id) { return document.getElementById(id); };
+        var origCode = $("origCode"), destMail = $("destMail"), driveName = $("driveName"), note = $("note");
+        var outbox = $("outbox"), outText = $("outText"), outTitle = $("outTitle");
+        var btnMailto = $("btnMailto"), btnDownload = $("btnDownload");
+        var sendToast = $("sendToast");
+        var backCode = $("backCode"), verdict = $("verdict"), btnCopyBack = $("btnCopyBack");
+        var lastPayload = "";
+
+        function nowStr() {
+          var d = new Date();
+          function p(n) { return (n < 10 ? "0" : "") + n; }
+          return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+        }
+        function clean(s) { return (s || "").replace(/\s+/g, ""); }
+        function hasMask(s) { return /[xX\*?？#]/.test(s); }
+
+        function copyText(text, doneMsg, toastEl) {
+          function ok() { if (toastEl) toastEl.textContent = doneMsg; }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(ok, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); ok(); } catch (e) { if (toastEl) toastEl.textContent = "复制没成功，请长按手动复制上面的内容。"; }
+            document.body.removeChild(ta);
+          }
+        }
+
+        /* 渠道切换 */
+        function setChannel(c) {
+          channel = c;
+          $("chMail").setAttribute("aria-pressed", c === "mail" ? "true" : "false");
+          $("chDrive").setAttribute("aria-pressed", c === "drive" ? "true" : "false");
+          $("mailFields").style.display = c === "mail" ? "" : "none";
+          $("driveFields").style.display = c === "drive" ? "" : "none";
+          if (lastPayload) compose();
+        }
+        $("chMail").addEventListener("click", function () { setChannel("mail"); });
+        $("chDrive").addEventListener("click", function () { setChannel("drive"); });
+
+        /* 生成发送内容 */
+        function compose() {
+          var code = clean(origCode.value);
+          sendToast.textContent = "";
+          if (!code) {
+            outbox.classList.remove("show");
+            sendToast.textContent = "先把收到的码贴进来，再生成发送内容。";
+            origCode.focus();
+            return null;
+          }
+          var lines = [];
+          lines.push("邀请码（原样转交）");
+          lines.push("码：" + code);
+          lines.push("状态：" + (hasMask(code) ? "带掩码，未补全" : "完整码"));
+          lines.push("转交时间：" + nowStr());
+          lines.push("渠道：" + (channel === "mail" ? "邮箱" : "网盘" + (driveName.value.trim() ? "（" + driveName.value.trim() + "）" : "")));
+          if (note.value.trim()) lines.push("附言：" + note.value.trim());
+          lines.push("下一步：处理后把完整码原样发回，再进入第 3 步单独测试。");
+          lastPayload = lines.join("\n");
+
+          outTitle.textContent = channel === "mail" ? "邮件内容（标题：邀请码转交）" : "网盘文件内容（文件名：invite-code.txt）";
+          outText.textContent = lastPayload;
+          outbox.classList.add("show");
+
+          if (channel === "mail") {
+            var to = destMail.value.trim();
+            var href = "mailto:" + encodeURIComponent(to) +
+              "?subject=" + encodeURIComponent("邀请码转交") +
+              "&body=" + encodeURIComponent(lastPayload);
+            btnMailto.setAttribute("href", href);
+            btnMailto.style.display = "";
+            btnDownload.style.display = "none";
+          } else {
+            btnMailto.style.display = "none";
+            btnDownload.style.display = "";
+          }
+          return code;
+        }
+        $("btnCompose").addEventListener("click", compose);
+        $("btnCopyOut").addEventListener("click", function () {
+          if (lastPayload) copyText(lastPayload, "已复制全文，粘贴到邮件或文件里即可。", sendToast);
+        });
+        btnDownload.addEventListener("click", function () {
+          if (!lastPayload) return;
+          var blob = new Blob([lastPayload], { type: "text/plain;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = "invite-code.txt";
+          document.body.appendChild(a); a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+          sendToast.textContent = "文件已下载，把它上传到你的网盘即可。";
+        });
+
+        /* 记录 */
+        function addRecord(code, dirLabel, statusText, pillClass) {
+          records.push({ time: nowStr(), code: code, dir: dirLabel, status: statusText, cls: pillClass });
+          renderRecords();
+        }
+        function renderRecords() {
+          var has = records.length > 0;
+          $("recEmpty").style.display = has ? "none" : "";
+          $("recTable").style.display = has ? "" : "none";
+          var tb = $("recBody");
+          tb.innerHTML = "";
+          records.slice().reverse().forEach(function (r) {
+            var tr = document.createElement("tr");
+            function td(cls) { var c = document.createElement("td"); if (cls) c.className = cls; return c; }
+            var t1 = td(); t1.textContent = r.time;
+            var t2 = td("code"); t2.textContent = r.code;
+            var t3 = td(); t3.textContent = r.dir;
+            var t4 = td();
+            var pill = document.createElement("span");
+            pill.className = "pill " + r.cls; pill.textContent = r.status;
+            t4.appendChild(pill);
+            tr.appendChild(t1); tr.appendChild(t2); tr.appendChild(t3); tr.appendChild(t4);
+            tb.appendChild(tr);
+          });
+        }
+
+        $("btnMarkSent").addEventListener("click", function () {
+          var code = clean(origCode.value);
+          if (!code) { sendToast.textContent = "先把收到的码贴进来，再标记已发送。"; origCode.focus(); return; }
+          addRecord(code, channel === "mail" ? "邮箱 · 发出" : "网盘 · 发出", "已发送", "sent");
+          sendToast.textContent = "已记下：这条码已经发到" + (channel === "mail" ? "邮箱" : "网盘") + "，等完整码回来后在下面收回。";
+        });
+
+        /* 收回验格式 */
+        var passedCode = "";
+        function checkBack() {
+          var code = clean(backCode.value);
+          passedCode = "";
+          btnCopyBack.disabled = true;
+          verdict.className = "verdict";
+          verdict.innerHTML = "";
+          if (!code) {
+            verdict.className = "verdict show warn";
+            verdict.innerHTML = "<b>还没贴码</b>把从邮箱或网盘收回的完整码原样贴进来，再点验格式。";
+            return;
+          }
+          if (hasMask(code)) {
+            verdict.className = "verdict show stop";
+            verdict.innerHTML = "<b>仍带掩码，停在这一步</b>收回的码 <span class='code'></span> 里还有遮挡字符，不是完整码。本站不补全、不猜，它只能回到原样登记，不能进入第 3 步。";
+            verdict.querySelector(".code").textContent = code;
+            addRecord(code, "收回", "仍带掩码 · 已停下", "held");
+            return;
+          }
+          if (code.length !== 16) {
+            verdict.className = "verdict show stop";
+            verdict.innerHTML = "<b>位数不对，停在这一步</b>收回的码是 " + code.length + " 位，完整码应为 16 位。先核对是不是复制漏了或多了字符，不要改动码本身去凑位数。";
+            addRecord(code, "收回", "位数不对 · 已停下", "held");
+            return;
+          }
+          if (!/^[A-Za-z0-9]{16}$/.test(code)) {
+            verdict.className = "verdict show stop";
+            verdict.innerHTML = "<b>含无效字符，停在这一步</b>码里只能是字母和数字。检查是不是把说明文字或符号一起粘进来了，删掉多余内容后原样重贴。";
+            addRecord(code, "收回", "含无效字符 · 已停下", "held");
+            return;
+          }
+          passedCode = code;
+          btnCopyBack.disabled = false;
+          verdict.className = "verdict show ok";
+          verdict.innerHTML = "<b>格式通过，可以交给第 3 步</b>码 <span class='code'></span> 是完整的 16 位。注意：这只说明格式对，能不能用要到第 3 步在注册页测了才知道。复制它，去第 3 步单独测试，一次只测这一个。";
+          verdict.querySelector(".code").textContent = code;
+          addRecord(code, "收回", "格式通过 · 待测试", "back");
+        }
+        $("btnCheck").addEventListener("click", checkBack);
+        backCode.addEventListener("keydown", function (e) { if (e.key === "Enter") checkBack(); });
+        btnCopyBack.addEventListener("click", function () {
+          if (passedCode) copyText(passedCode, "", null);
+          if (passedCode) {
+            verdict.className = "verdict show ok";
+            verdict.innerHTML = "<b>已复制</b>把这个码粘贴到第 3 步（单独测试邀请码）里测试。一次只测这一个，测完记结果。";
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

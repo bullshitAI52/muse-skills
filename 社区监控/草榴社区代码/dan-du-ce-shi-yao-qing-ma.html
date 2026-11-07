@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>单独测试邀请码</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f5f2;
+        --surface:#ffffff;
+        --surface-2:#eceee9;
+        --ink:#191d1a;
+        --ink-2:#4c554e;
+        --ink-3:#7c867e;
+        --line:#d9ddd5;
+        --accent:#0f6a4a;
+        --accent-ink:#ffffff;
+        --accent-soft:#e2f0e8;
+        --warn:#9a5b00;
+        --warn-soft:#fdf0da;
+        --bad:#b3362b;
+        --bad-soft:#fbe7e4;
+        --ok:#0f6a4a;
+        --ok-soft:#e2f0e8;
+        --radius:14px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#121513;
+          --surface:#1b1f1c;
+          --surface-2:#242824;
+          --ink:#edf0ec;
+          --ink-2:#b6beb5;
+          --ink-3:#8a938a;
+          --line:#333833;
+          --accent:#3cb68a;
+          --accent-ink:#0c1712;
+          --accent-soft:#1d2f27;
+          --warn:#e0a44a;
+          --warn-soft:#33270f;
+          --bad:#ef8a7e;
+          --bad-soft:#38201c;
+          --ok:#3cb68a;
+          --ok-soft:#1d2f27;
+        }
+      }
+      *{box-sizing:border-box}
+      html{-webkit-text-size-adjust:100%}
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+        line-height:1.65;
+      }
+      .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+      .wrap{max-width:880px;margin:0 auto;padding:28px 20px 56px}
+
+      /* header */
+      .kicker{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--accent);margin:0 0 8px}
+      h1{font-size:34px;line-height:1.2;font-weight:900;margin:0 0 10px;letter-spacing:-.01em}
+      .lede{font-size:16px;color:var(--ink-2);margin:0 0 18px;max-width:640px}
+      .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px;padding:0;list-style:none}
+      .chips li{
+        font-size:13px;font-weight:500;color:var(--ink-2);
+        background:var(--surface);border:1px solid var(--line);
+        padding:5px 12px;border-radius:999px;
+      }
+      .chips li strong{color:var(--ink);font-weight:700}
+
+      section{margin-top:36px}
+      .sec-head{display:flex;align-items:baseline;gap:12px;margin:0 0 6px}
+      .sec-num{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;color:var(--accent)}
+      h2{font-size:21px;font-weight:900;margin:0}
+      .sec-sub{color:var(--ink-2);font-size:14.5px;margin:2px 0 16px;max-width:660px}
+
+      .card{
+        background:var(--surface);border:1px solid var(--line);
+        border-radius:var(--radius);padding:20px;
+      }
+
+      /* tester */
+      label.field-label{display:block;font-size:13.5px;font-weight:700;margin:0 0 8px}
+      .code-input{
+        width:100%;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:17px;
+        padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;
+        background:var(--bg);color:var(--ink);letter-spacing:.04em;
+      }
+      .code-input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+      .code-input::placeholder{color:var(--ink-3);letter-spacing:0}
+      .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+      button{
+        font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;
+        border-radius:10px;padding:10px 18px;border:1px solid transparent;
+      }
+      .btn-primary{background:var(--accent);color:var(--accent-ink)}
+      .btn-primary:active{transform:translateY(1px)}
+      .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+      .btn-ghost:active{transform:translateY(1px)}
+      button:disabled{opacity:.45;cursor:default}
+
+      .verdict{margin-top:18px;border-radius:10px;padding:16px 18px;display:none}
+      .verdict.show{display:block}
+      .verdict h3{margin:0 0 4px;font-size:16.5px;font-weight:900}
+      .verdict p{margin:0;font-size:14.5px}
+      .verdict.ok{background:var(--ok-soft)}
+      .verdict.ok h3{color:var(--ok)}
+      .verdict.masked{background:var(--warn-soft)}
+      .verdict.masked h3{color:var(--warn)}
+      .verdict.invalid{background:var(--bad-soft)}
+      .verdict.invalid h3{color:var(--bad)}
+      .facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:12px;font-size:13.5px;color:var(--ink-2)}
+      .facts b{color:var(--ink);font-weight:600}
+      .verdict-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+      .verdict-actions button{padding:8px 14px;font-size:13.5px}
+
+      /* principle */
+      .principle{
+        background:var(--accent-soft);border:1px solid var(--line);
+        border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;
+      }
+      .principle strong{display:block;font-size:16px;font-weight:900;margin-bottom:4px}
+      .principle p{margin:0;font-size:14.5px;color:var(--ink-2)}
+      .principle p strong{display:inline;font-size:inherit;margin:0;color:var(--ink)}
+
+      /* outcomes */
+      .outcomes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      .outcome{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+      .outcome h3{font-size:15.5px;font-weight:900;margin:0 0 6px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+      .outcome p{font-size:14px;color:var(--ink-2);margin:0}
+      .outcome p strong{color:var(--ink)}
+      .tag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+      .tag.go{background:var(--ok-soft);color:var(--ok)}
+      .tag.stop{background:var(--bad-soft);color:var(--bad)}
+      .masked-stop{
+        margin-top:12px;background:var(--warn-soft);border:1px solid var(--line);
+        border-radius:var(--radius);padding:16px 18px;font-size:14.5px;color:var(--ink-2);
+      }
+      .masked-stop strong{color:var(--warn)}
+      @media (max-width:640px){.outcomes{grid-template-columns:1fr}}
+
+      /* steps */
+      .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+      .step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+      .step .n{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600;color:var(--accent);display:block;margin-bottom:6px}
+      .step h3{font-size:15px;font-weight:700;margin:0 0 4px}
+      .step p{font-size:13.5px;color:var(--ink-2);margin:0}
+      @media (max-width:760px){.steps{grid-template-columns:1fr 1fr}}
+      @media (max-width:480px){.steps{grid-template-columns:1fr}}
+
+      /* log */
+      .log-summary{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--ink-2);margin-bottom:14px}
+      .log-summary b{color:var(--ink)}
+      .empty{
+        border:1.5px dashed var(--line);border-radius:var(--radius);
+        padding:28px 20px;text-align:center;color:var(--ink-3);font-size:14.5px;background:transparent;
+      }
+      .entry{
+        background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:16px 18px;margin-bottom:10px;
+      }
+      .entry-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+      .entry-code{font-family:"IBM Plex Mono",monospace;font-size:16.5px;font-weight:600;word-break:break-all;flex:1 1 200px}
+      .badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+      .badge.full{background:var(--ok-soft);color:var(--ok)}
+      .badge.masked{background:var(--warn-soft);color:var(--warn)}
+      .entry-meta{font-size:13px;color:var(--ink-3);margin-top:6px}
+      .entry-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
+      .entry-controls select{
+        font:inherit;font-size:14px;padding:8px 10px;border-radius:8px;
+        border:1px solid var(--line);background:var(--bg);color:var(--ink);
+      }
+      .entry-controls input[type="text"]{
+        font:inherit;font-size:14px;padding:8px 10px;border-radius:8px;flex:1 1 180px;
+        border:1px solid var(--line);background:var(--bg);color:var(--ink);
+      }
+      .mini-btn{
+        font-size:13px;font-weight:500;padding:7px 12px;border-radius:8px;
+        background:transparent;border:1px solid var(--line);color:var(--ink-2);
+      }
+      .mini-btn.danger{color:var(--bad)}
+      .log-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+      .toast{
+        position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+        background:var(--ink);color:var(--bg);font-size:14px;font-weight:500;
+        padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;
+        transition:opacity .2s,transform .2s;z-index:20;max-width:90vw;text-align:center;
+      }
+      .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+      /* rules */
+      .rules{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+      .rules li{
+        background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+        padding:14px 18px 14px 46px;position:relative;font-size:14.5px;color:var(--ink-2);
+      }
+      .rules li::before{
+        content:"";position:absolute;left:18px;top:20px;width:14px;height:8px;
+        border-left:3px solid var(--accent);border-bottom:3px solid var(--accent);
+        transform:rotate(-45deg);
+      }
+      .rules li strong{color:var(--ink)}
+      footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <p class="kicker">邀请码 · 独立测试区</p>
+        <h1>单独测试邀请码</h1>
+        <p class="lede">监控照常跑，这个空间只做一件事：把拿到的码一个一个拿进来，先看格式，再手动试，最后把结果记下来。和监控分开，不互相干扰。</p>
+        <ul class="chips">
+          <li><strong>一次</strong> 只测一个</li>
+          <li><strong>原样</strong> 粘贴，不改任何字符</li>
+          <li><strong>完整 ≠ 能用</strong>，只有注册页说了算</li>
+          <li><strong>带掩码</strong> 的不测，只登记，到此为止</li>
+          <li>测完 <strong>当场记结果</strong></li>
+        </ul>
+      </header>
+
+      <section aria-labelledby="tester-h">
+        <div class="sec-head"><span class="sec-num">01</span><h2 id="tester-h">测试台</h2></div>
+        <p class="sec-sub">把码粘进来点「检查格式」。这里只看码本身长什么样——真正的有效无效，要到论坛注册页手动输入一次才知道，这里不会替你提交。</p>
+        <div class="principle" role="note">
+          <strong>完整不等于能用</strong>
+          <p>这里显示「完整」，只说明<strong>位数和字符齐全、没有掩码</strong>，不代表这个码能注册。能不能用，<strong>只有论坛注册页的判定算数</strong>：同一个码，在这里看着再完整，注册页说已被使用、无效或已过期，就按注册页的结果记，不按这里的格式结果记。</p>
+        </div>
+        <div class="card">
+          <label class="field-label" for="codeInput">邀请码（原样粘贴）</label>
+          <input class="code-input" id="codeInput" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="例如从帖子里复制到的完整码" />
+          <div class="btn-row">
+            <button class="btn-primary" id="analyzeBtn" type="button">检查格式</button>
+            <button class="btn-ghost" id="clearBtn" type="button">清空</button>
+          </div>
+
+          <div class="verdict" id="verdict" role="status" aria-live="polite">
+            <h3 id="verdictTitle"></h3>
+            <p id="verdictBody"></p>
+            <div class="facts" id="verdictFacts"></div>
+            <div class="verdict-actions">
+              <button class="btn-ghost" id="copyBtn" type="button">复制这个码</button>
+              <button class="btn-primary" id="addBtn" type="button">加入下面的测试记录</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="steps-h">
+        <div class="sec-head"><span class="sec-num">02</span><h2 id="steps-h">测试流程</h2></div>
+        <p class="sec-sub">每个码都走同样四步，走完再测下一个。</p>
+        <div class="steps">
+          <div class="step"><span class="n">STEP 1</span><h3>原样粘贴</h3><p>从原帖里复制，粘到上面的测试台，不手打、不改大小写。</p></div>
+          <div class="step"><span class="n">STEP 2</span><h3>检查格式</h3><p>只看有没有掩码、位数和字符齐不齐。带掩码的到这一步就停，永远停在原样登记，不进第 3 步。</p></div>
+          <div class="step"><span class="n">STEP 3</span><h3>手动试一次</h3><p>只有完整码才到论坛注册页手动输入，只试这一次。能用不能用，以注册页这次的提示为准。</p></div>
+          <div class="step"><span class="n">STEP 4</span><h3>回来记结果</h3><p>按注册页的判定标上有效、已被使用、无效或已过期，再按下面对应的下一步做，避免下次重复试。</p></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="outcomes-h">
+        <div class="sec-head"><span class="sec-num">03</span><h2 id="outcomes-h">注册页判定后：四种结果分别怎么办</h2></div>
+        <p class="sec-sub">格式检查不下结论。下面四种都是注册页试过一次之后的结果——以注册页显示的为准，回来在记录里选对应的状态，然后照「下一步」做。</p>
+        <div class="outcomes">
+          <div class="outcome">
+            <h3>有效 <span class="tag go">唯一能往下走的</span></h3>
+            <p><strong>下一步：</strong>当场把状态标为「有效」，备注里记下注册页的原提示，然后尽快去注册空间用这个码走正式注册。不要搁置、不要再反复拿它试；注册完成后回来把结果补记清楚。</p>
+          </div>
+          <div class="outcome">
+            <h3>已被使用 <span class="tag stop">停手</span></h3>
+            <p><strong>下一步：</strong>当场标为「已被使用」并停手。这个码已经归别人了，不再试第二次、不改字符再试、不拿去注册。记下来源帖子，等下一个新码。</p>
+          </div>
+          <div class="outcome">
+            <h3>无效 <span class="tag stop">停手</span></h3>
+            <p><strong>下一步：</strong>当场标为「无效」并停手。注册页不认就是不认——不猜是不是抄错、不换一位字符重试、不补全。备注里原样记下注册页的提示，这个码到此结束。</p>
+          </div>
+          <div class="outcome">
+            <h3>已过期 <span class="tag stop">停手</span></h3>
+            <p><strong>下一步：</strong>当场标为「已过期」并停手。过期不会因为多试几次变回来，不再输入、不拿去注册。记下试的时间和来源，等新帖里的新码。</p>
+          </div>
+        </div>
+        <div class="masked-stop">
+          <strong>带掩码的码不在这四种里面。</strong>它连注册页都不去，永远停在「原样登记」这一步：按原文加入记录、状态留「未测试」、备注写明带掩码，只登记、只通知，不补全、不猜、不试，也不会因为登记了就变成可测的码。
+        </div>
+      </section>
+
+      <section aria-labelledby="log-h">
+        <div class="sec-head"><span class="sec-num">04</span><h2 id="log-h">测试记录</h2></div>
+        <p class="sec-sub">测过的码都记在这里，状态只按注册页的判定选，不按格式检查选。记录只在当前打开的页面里，关掉就没了——需要留底就用下面的按钮复制或下载一份。</p>
+        <div class="log-summary" id="logSummary"></div>
+        <div id="logList"></div>
+        <div class="empty" id="logEmpty">还没有记录。在上面的测试台检查一个码，点「加入下面的测试记录」就会出现在这里。</div>
+        <div class="log-actions">
+          <button class="btn-ghost" id="copyAllBtn" type="button">复制全部记录</button>
+          <button class="btn-ghost" id="downloadBtn" type="button">下载记录 (.txt)</button>
+        </div>
+      </section>
+
+      <section aria-labelledby="rules-h">
+        <div class="sec-head"><span class="sec-num">05</span><h2 id="rules-h">测试的规矩</h2></div>
+        <p class="sec-sub">和监控那边定的是同一套，测试这边同样照做。</p>
+        <ul class="rules">
+          <li><strong>完整不等于能用。</strong>格式检查通过，只说明没有掩码、字符齐全；这个码到底能不能用，只有到论坛注册页手动试一次、看注册页的判定才算数。</li>
+          <li><strong>带掩码的码永远停在原样登记。</strong>带 *、×、? 这类遮挡符号的，只按原样登记和通知，不进注册页、不补全、不猜缺的字符、不用变着字符反复试，登记完就结束。</li>
+          <li><strong>四种结果，只有「有效」往下走。</strong>注册页说有效，才去正式注册；说已被使用、无效或已过期，一律当场标好状态就停手，不重试同一个码。</li>
+          <li><strong>一个码只试一次。</strong>页面说无效或已被使用，就记下结果停手，不换一个字符再试同一个码。</li>
+          <li><strong>不批量试。</strong>一次只放一个码进注册页，不攒一批连续提交。</li>
+          <li><strong>码按原样记。</strong>记录里存的就是收到的原文，大小写和符号都不动，日后对得上原帖。</li>
+          <li><strong>结果当场标。</strong>有效、已使用、无效、过期四种状态选一种，拿不准就先标「未测试」，别凭印象。</li>
+        </ul>
+      </section>
+
+      <footer>这个空间只负责测试环节的记录；新帖监控和发现完整码后的注册，仍按原来那套监控规则走。</footer>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      (function () {
+        var MASK_CHARS = ["*", "＊", "×", "✕", "✖", "?", "？", "…"];
+        var input = document.getElementById("codeInput");
+        var verdict = document.getElementById("verdict");
+        var verdictTitle = document.getElementById("verdictTitle");
+        var verdictBody = document.getElementById("verdictBody");
+        var verdictFacts = document.getElementById("verdictFacts");
+        var addBtn = document.getElementById("addBtn");
+        var toast = document.getElementById("toast");
+        var entries = [];
+        var current = null;
+        var toastTimer = null;
+
+        function showToast(msg) {
+          toast.textContent = msg;
+          toast.classList.add("show");
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2200);
+        }
+
+        function analyze(raw) {
+          var code = (raw || "").trim();
+          if (!code) return { kind: "invalid", code: code };
+          var foundMasks = [];
+          for (var i = 0; i < MASK_CHARS.length; i++) {
+            if (code.indexOf(MASK_CHARS[i]) !== -1) foundMasks.push(MASK_CHARS[i]);
+          }
+          var hasSpace = /\s/.test(code);
+          var letters = (code.match(/[A-Za-z]/g) || []).length;
+          var digits = (code.match(/[0-9]/g) || []).length;
+          var others = code.length - letters - digits;
+          return {
+            kind: foundMasks.length ? "masked" : "full",
+            code: code,
+            masks: foundMasks,
+            hasSpace: hasSpace,
+            length: code.length,
+            letters: letters,
+            digits: digits,
+            others: others
+          };
+        }
+
+        function fact(label, value) {
+          return "<span>" + label + " <b>" + value + "</b></span>";
+        }
+
+        function runAnalyze() {
+          var r = analyze(input.value);
+          current = r;
+          verdict.className = "verdict show";
+          if (r.kind === "invalid") {
+            verdict.classList.add("invalid");
+            verdictTitle.textContent = "还没有码";
+            verdictBody.textContent = "输入框是空的。先从原帖把码原样复制过来，再检查一次。";
+            verdictFacts.innerHTML = "";
+            addBtn.disabled = true;
+            return;
+          }
+          addBtn.disabled = false;
+          var facts =
+            fact("字符数", r.length) +
+            fact("字母", r.letters) +
+            fact("数字", r.digits) +
+            fact("其他符号", r.others) +
+            (r.hasSpace ? fact("空格", "含有空格，粘贴时可能多带了内容") : "");
+          if (r.kind === "masked") {
+            verdict.classList.add("masked");
+            verdictTitle.textContent = "带掩码的码 —— 停在原样登记，不往下走";
+            verdictBody.textContent =
+              "这个码含有掩码符号（" + r.masks.join("、") + "），缺的字符看不到。它永远停在这一步：只原样登记、不补全、不猜、不拿去注册页试。可以加入记录，状态留「未测试」并注明是带掩码的码。";
+          } else {
+            verdict.classList.add("ok");
+            verdictTitle.textContent = "格式完整 —— 还不等于能用";
+            verdictBody.textContent =
+              "没有发现掩码符号，只能说明格式完整，能不能用这里说了不算。到论坛注册页把这个码原样输入一次，以注册页的判定为准：说有效才去注册；说已被使用、无效或已过期，就回来按对应状态标好并停手。";
+          }
+          verdictFacts.innerHTML = facts;
+        }
+
+        document.getElementById("analyzeBtn").addEventListener("click", runAnalyze);
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") runAnalyze();
+        });
+        document.getElementById("clearBtn").addEventListener("click", function () {
+          input.value = "";
+          current = null;
+          verdict.className = "verdict";
+          input.focus();
+        });
+        document.getElementById("copyBtn").addEventListener("click", function () {
+          if (!current || !current.code) return;
+          copyText(current.code, "已复制这个码");
+        });
+        addBtn.addEventListener("click", function () {
+          if (!current || !current.code) return;
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].code === current.code) {
+              showToast("这个码已经在记录里了，不用重复加");
+              return;
+            }
+          }
+          entries.unshift({
+            id: Date.now(),
+            code: current.code,
+            type: current.kind,
+            status: "未测试",
+            note: current.kind === "masked" ? "带掩码，只登记不测试" : "",
+            time: new Date()
+          });
+          renderLog();
+          showToast("已加入测试记录");
+        });
+
+        function copyText(text, msg) {
+          function done() { showToast(msg); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); done(); }
+            catch (e) { showToast("复制没成功，请长按手动复制"); }
+            document.body.removeChild(ta);
+          }
+        }
+
+        function pad(n) { return (n < 10 ? "0" : "") + n; }
+        function fmtTime(d) {
+          return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
+            " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+        }
+
+        var STATUSES = ["未测试", "有效", "已被使用", "无效", "已过期"];
+
+        function renderLog() {
+          var list = document.getElementById("logList");
+          var empty = document.getElementById("logEmpty");
+          var summary = document.getElementById("logSummary");
+          list.innerHTML = "";
+          empty.style.display = entries.length ? "none" : "block";
+
+          var counts = { total: entries.length, full: 0, masked: 0, ok: 0, tested: 0 };
+          entries.forEach(function (e) {
+            if (e.type === "masked") counts.masked++; else counts.full++;
+            if (e.status === "有效") counts.ok++;
+            if (e.status !== "未测试") counts.tested++;
+          });
+          summary.innerHTML =
+            "<span>共 <b>" + counts.total + "</b> 条</span>" +
+            "<span>完整码 <b>" + counts.full + "</b></span>" +
+            "<span>带掩码 <b>" + counts.masked + "</b></span>" +
+            "<span>已测 <b>" + counts.tested + "</b></span>" +
+            "<span>有效 <b>" + counts.ok + "</b></span>";
+
+          entries.forEach(function (e) {
+            var div = document.createElement("div");
+            div.className = "entry";
+
+            var top = document.createElement("div");
+            top.className = "entry-top";
+            var codeEl = document.createElement("span");
+            codeEl.className = "entry-code";
+            codeEl.textContent = e.code;
+            var badge = document.createElement("span");
+            badge.className = "badge " + (e.type === "masked" ? "masked" : "full");
+            badge.textContent = e.type === "masked" ? "带掩码" : "完整码";
+            top.appendChild(codeEl);
+            top.appendChild(badge);
+
+            var meta = document.createElement("div");
+            meta.className = "entry-meta";
+            meta.textContent = "加入于 " + fmtTime(e.time);
+
+            var controls = document.createElement("div");
+            controls.className = "entry-controls";
+
+            var sel = document.createElement("select");
+            sel.setAttribute("aria-label", "测试结果");
+            STATUSES.forEach(function (s) {
+              var opt = document.createElement("option");
+              opt.value = s; opt.textContent = s;
+              if (s === e.status) opt.selected = true;
+              sel.appendChild(opt);
+            });
+            sel.addEventListener("change", function () {
+              e.status = sel.value;
+              renderLog();
+            });
+
+            var note = document.createElement("input");
+            note.type = "text";
+            note.placeholder = "备注：来自哪篇帖子、页面提示了什么";
+            note.value = e.note;
+            note.setAttribute("aria-label", "备注");
+            note.addEventListener("change", function () { e.note = note.value; });
+
+            var copyB = document.createElement("button");
+            copyB.type = "button"; copyB.className = "mini-btn"; copyB.textContent = "复制";
+            copyB.addEventListener("click", function () { copyText(e.code, "已复制这个码"); });
+
+            var delB = document.createElement("button");
+            delB.type = "button"; delB.className = "mini-btn danger"; delB.textContent = "删除";
+            delB.addEventListener("click", function () {
+              entries = entries.filter(function (x) { return x.id !== e.id; });
+              renderLog();
+              showToast("已删除这条记录");
+            });
+
+            controls.appendChild(sel);
+            controls.appendChild(note);
+            controls.appendChild(copyB);
+            controls.appendChild(delB);
+
+            div.appendChild(top);
+            div.appendChild(meta);
+            div.appendChild(controls);
+            list.appendChild(div);
+          });
+        }
+
+        function recordsText() {
+          if (!entries.length) return "";
+          var lines = ["邀请码测试记录", "导出时间：" + fmtTime(new Date()), ""];
+          entries.forEach(function (e, i) {
+            lines.push((i + 1) + ". " + e.code);
+            lines.push("   类型：" + (e.type === "masked" ? "带掩码（只登记不测试）" : "完整码"));
+            lines.push("   结果：" + e.status);
+            lines.push("   加入：" + fmtTime(e.time));
+            if (e.note) lines.push("   备注：" + e.note);
+          });
+          return lines.join("\n");
+        }
+
+        document.getElementById("copyAllBtn").addEventListener("click", function () {
+          var t = recordsText();
+          if (!t) { showToast("还没有记录可复制"); return; }
+          copyText(t, "全部记录已复制");
+        });
+        document.getElementById("downloadBtn").addEventListener("click", function () {
+          var t = recordsText();
+          if (!t) { showToast("还没有记录可下载"); return; }
+          var blob = new Blob([t], { type: "text/plain;charset=utf-8" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "邀请码测试记录.txt";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          showToast("记录已下载");
+        });
+
+        renderLog();
+      })();
+    </script>
+  </body>
+</html>

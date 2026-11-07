@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>t66y 邀请码监控手册（分享版）</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#f4f5f3;
+        --paper:#ffffff;
+        --ink:#1c2420;
+        --ink-2:#4a554e;
+        --ink-3:#7d8a82;
+        --line:#dde2dc;
+        --line-strong:#c3ccc4;
+        --accent:#17604a;
+        --accent-ink:#0f4634;
+        --accent-soft:#e6f0ea;
+        --warn:#8a5a12;
+        --warn-soft:#faf0da;
+        --danger:#9c3327;
+        --danger-soft:#f9e9e6;
+        --ok:#17604a;
+        --ok-soft:#e6f0ea;
+        --code-bg:#eef1ee;
+        --shadow:0 1px 2px rgba(20,35,28,.06),0 10px 30px -18px rgba(20,35,28,.25);
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#121614;
+          --paper:#1b201d;
+          --ink:#e8ece9;
+          --ink-2:#aeb9b2;
+          --ink-3:#7e8b83;
+          --line:#2c332e;
+          --line-strong:#3d4740;
+          --accent:#5cb894;
+          --accent-ink:#8fd3b6;
+          --accent-soft:#1d2e27;
+          --warn:#e0aa4e;
+          --warn-soft:#33291a;
+          --danger:#e08a7d;
+          --danger-soft:#37211d;
+          --ok:#5cb894;
+          --ok-soft:#1d2e27;
+          --code-bg:#242a26;
+          --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -18px rgba(0,0,0,.6);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:"Noto Sans SC",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+        font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased;
+      }
+      .wrap{max-width:860px;margin:0 auto;padding:0 20px 72px}
+
+      /* ---------- header ---------- */
+      header{padding:44px 0 8px}
+      .share-tag{
+        display:inline-flex;align-items:center;gap:8px;
+        border:1px solid var(--line-strong);border-radius:999px;
+        padding:4px 14px 4px 10px;font-size:13px;color:var(--ink-2);background:var(--paper);
+      }
+      .share-tag .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+      h1{
+        font-family:"Noto Serif SC",serif;font-weight:900;
+        font-size:clamp(30px,6vw,44px);line-height:1.25;margin:20px 0 12px;letter-spacing:.01em;
+      }
+      .lede{font-size:17px;color:var(--ink-2);max-width:38em;margin:0}
+      .lede strong{color:var(--ink)}
+      .meta-row{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:18px;font-size:13.5px;color:var(--ink-3)}
+      .meta-row b{color:var(--ink-2);font-weight:500}
+
+      /* ---------- core rule ---------- */
+      .core{
+        margin-top:30px;background:var(--accent-ink);color:#eef5f1;
+        border-radius:14px;padding:26px 28px;box-shadow:var(--shadow);
+      }
+      @media (prefers-color-scheme: dark){.core{background:#173b2d}}
+      .core .k{font-size:13px;letter-spacing:.14em;opacity:.75;margin:0 0 6px}
+      .core p.big{font-family:"Noto Serif SC",serif;font-size:clamp(21px,4.4vw,27px);font-weight:700;line-height:1.5;margin:0}
+      .core p.small{margin:10px 0 0;font-size:14.5px;opacity:.85;line-height:1.7}
+
+      /* ---------- flow strip ---------- */
+      .flow{margin-top:34px}
+      .flow h2,.sec h2{font-family:"Noto Serif SC",serif;font-size:22px;font-weight:700;margin:0 0 4px}
+      .flow .sub,.sec .sub{color:var(--ink-2);font-size:14.5px;margin:0 0 18px}
+      .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+      .step-chip{
+        background:var(--paper);border:1px solid var(--line);border-radius:12px;
+        padding:14px 12px 12px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);
+        display:block;transition:border-color .15s ease;
+      }
+      .step-chip:hover{border-color:var(--accent)}
+      .step-chip .n{font-family:"Noto Serif SC",serif;font-weight:900;font-size:20px;color:var(--accent);line-height:1}
+      .step-chip .t{font-weight:700;font-size:14.5px;margin-top:8px;line-height:1.45}
+      .step-chip .d{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin-top:3px}
+      @media (max-width:760px){
+        .steps{grid-template-columns:1fr 1fr}
+        .step-chip:last-child{grid-column:1/-1}
+      }
+
+      /* ---------- sections ---------- */
+      .sec{margin-top:44px}
+      .card{
+        background:var(--paper);border:1px solid var(--line);border-radius:14px;
+        padding:26px 28px;box-shadow:var(--shadow);
+      }
+      @media (max-width:560px){.card{padding:22px 18px}}
+      .sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+      .sec-head .num{
+        font-family:"Noto Serif SC",serif;font-weight:900;font-size:30px;color:var(--accent);line-height:1;flex:none;
+      }
+      .sec-head h3{font-size:20px;font-weight:700;margin:0}
+      .sec-head .tag{margin-left:auto;font-size:12.5px;color:var(--ink-3);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+      .card p{margin:12px 0 0;color:var(--ink-2)}
+      .card p strong,.card li strong{color:var(--ink)}
+      ul.rules{list-style:none;margin:14px 0 0;padding:0}
+      ul.rules li{position:relative;padding:7px 0 7px 26px;border-top:1px dashed var(--line);color:var(--ink-2)}
+      ul.rules li:first-child{border-top:none}
+      ul.rules li::before{
+        content:"";position:absolute;left:4px;top:17px;width:7px;height:7px;border-radius:2px;background:var(--accent);
+      }
+      ul.rules li.no::before{background:var(--danger);border-radius:50%}
+      code{
+        font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.88em;
+        background:var(--code-bg);border-radius:6px;padding:1px 7px;color:var(--ink);
+        word-break:break-all;
+      }
+      .callout{border-radius:10px;padding:14px 18px;margin-top:16px;font-size:14.5px;line-height:1.7}
+      .callout.warn{background:var(--warn-soft);color:var(--ink)}
+      .callout.warn b{color:var(--warn)}
+      .callout.danger{background:var(--danger-soft);color:var(--ink)}
+      .callout.danger b{color:var(--danger)}
+
+      /* result table */
+      .results{margin-top:16px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+      .results .row{display:grid;grid-template-columns:110px 1fr;gap:0}
+      .results .row + .row{border-top:1px solid var(--line)}
+      .results .verdict{padding:12px 16px;font-weight:700;font-size:14.5px;display:flex;align-items:flex-start;gap:8px}
+      .results .next{padding:12px 16px;color:var(--ink-2);font-size:14.5px;border-left:1px solid var(--line)}
+      .badge{flex:none;margin-top:3px;width:9px;height:9px;border-radius:50%}
+      .badge.ok{background:var(--ok)} .badge.used{background:var(--warn)} .badge.bad{background:var(--danger)} .badge.old{background:var(--ink-3)}
+      @media (max-width:520px){
+        .results .row{grid-template-columns:1fr}
+        .results .next{border-left:none;padding-top:0}
+      }
+
+      /* pipeline diagram */
+      .pipe{display:flex;align-items:stretch;gap:0;margin-top:16px;flex-wrap:wrap}
+      .pipe .node{
+        flex:1 1 120px;background:var(--accent-soft);border:1px solid var(--line);
+        border-radius:10px;padding:12px 14px;text-align:center;
+      }
+      .pipe .node .nt{font-weight:700;font-size:14.5px}
+      .pipe .node .nd{font-size:12.5px;color:var(--ink-2);line-height:1.55}
+      .pipe .arrow{align-self:center;padding:0 6px;color:var(--ink-3);font-size:18px;flex:none}
+      @media (max-width:640px){
+        .pipe{flex-direction:column}
+        .pipe .arrow{transform:rotate(90deg);padding:2px 0;margin:0 auto}
+      }
+
+      /* ---------- checker tool ---------- */
+      .tool{margin-top:44px}
+      .tool textarea{
+        width:100%;min-height:110px;resize:vertical;margin-top:14px;
+        border:1px solid var(--line-strong);border-radius:10px;background:var(--bg);
+        color:var(--ink);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+        font-size:15px;line-height:1.7;padding:12px 14px;outline:none;
+      }
+      .tool textarea:focus{border-color:var(--accent)}
+      .tool .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+      button{
+        font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
+        border-radius:10px;padding:10px 22px;border:1px solid transparent;
+      }
+      .btn-main{background:var(--accent);color:#fff}
+      @media (prefers-color-scheme: dark){.btn-main{color:#0d1512}}
+      .btn-main:active{transform:translateY(1px)}
+      .btn-ghost{background:transparent;color:var(--ink-2);border-color:var(--line-strong)}
+      .tool .hint{font-size:13px;color:var(--ink-3)}
+      #checkOut{margin-top:16px;display:none}
+      #checkOut .line{
+        display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px dashed var(--line);font-size:14.5px;
+      }
+      #checkOut .line:first-child{border-top:none}
+      #checkOut .st{flex:none;font-weight:700;font-size:13px;border-radius:999px;padding:2px 11px;margin-top:2px}
+      .st.ok{background:var(--ok-soft);color:var(--ok)}
+      .st.masked{background:var(--warn-soft);color:var(--warn)}
+      .st.bad{background:var(--danger-soft);color:var(--danger)}
+      #checkOut .why{color:var(--ink-2)}
+      #checkSummary{font-weight:700;margin:4px 0 6px}
+      #copyClean{display:none;margin-top:12px}
+
+      /* ---------- fill-in list ---------- */
+      .fill{list-style:none;margin:14px 0 0;padding:0;counter-reset:fill}
+      .fill li{
+        counter-increment:fill;position:relative;padding:10px 0 10px 44px;border-top:1px dashed var(--line);color:var(--ink-2);
+      }
+      .fill li:first-child{border-top:none}
+      .fill li::before{
+        content:counter(fill);position:absolute;left:0;top:9px;width:28px;height:28px;border-radius:50%;
+        border:1.5px solid var(--accent);color:var(--accent);font-weight:700;font-size:14px;
+        display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC",serif;
+      }
+      .slot{
+        display:inline-block;border-bottom:2px dotted var(--accent);color:var(--accent-ink);
+        font-weight:700;padding:0 4px;
+      }
+
+      footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-3);line-height:1.8}
+      @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header>
+        <span class="share-tag"><span class="dot"></span>分享版 · 已去除个人信息，可直接转发</span>
+        <h1>t66y 邀请码<br />监控手册</h1>
+        <p class="lede">一套找邀请码的完整流程：<strong>监控发现 → 原样通知 → 发出与收回 → 单独测试 → 确认能用再注册</strong>。五个环节各管一段，规则统一，照着做就能复现整条链路。</p>
+        <div class="meta-row">
+          <span>监控对象：<b>t66y 邀请码版块</b></span>
+          <span>检查频率：<b>每 3 分钟一轮</b></span>
+          <span>邀请码格式：<b>16 位字符</b></span>
+        </div>
+      </header>
+
+      <div class="core">
+        <p class="k">全手册只认这一句</p>
+        <p class="big">完整 ≠ 能用，只有注册页的判定算数。</p>
+        <p class="small">一个码长得完整、格式正确，不代表它有效。它可能已被别人用掉、已经过期，或者根本无效。任何环节都不能凭格式下结论——最终只看注册页检查后的返回结果。</p>
+      </div>
+
+      <section class="flow">
+        <h2>流程总览</h2>
+        <p class="sub">点任意一步，跳到对应的详细说明。</p>
+        <div class="steps">
+          <a class="step-chip" href="#s1"><span class="n">1</span><div class="t">监控</div><div class="d">定时扫版块，只看当天新帖，发现码就进入下一步</div></a>
+          <a class="step-chip" href="#s2"><span class="n">2</span><div class="t">原样通知</div><div class="d">带掩码的码只原样转达，不补全、不猜、不试</div></a>
+          <a class="step-chip" href="#s25"><span class="n">2.5</span><div class="t">发出与收回</div><div class="d">码经邮箱或网盘转交，回来后先验格式再放行</div></a>
+          <a class="step-chip" href="#s3"><span class="n">3</span><div class="t">单独测试</div><div class="d">完整码一个一个在注册页测，测完逐个记结果</div></a>
+          <a class="step-chip" href="#s4"><span class="n">4</span><div class="t">注册</div><div class="d">只有判定能用的码才拿去注册，用掉即停</div></a>
+        </div>
+      </section>
+
+      <!-- STEP 1 -->
+      <section class="sec" id="s1">
+        <div class="card">
+          <div class="sec-head">
+            <span class="num">1</span>
+            <h3>监控手册：总规则与状态</h3>
+            <span class="tag">每 3 分钟一轮 · 全天运行</span>
+          </div>
+          <p>这一环只负责<strong>发现</strong>：盯住邀请码版块的新帖，把疑似邀请码的帖子找出来，交给后面的环节处理。监控本身不判断码能不能用。</p>
+          <ul class="rules">
+            <li>每 <strong>3 分钟</strong>检查一轮；每轮开始前先<strong>随机等待 0–20 秒</strong>，不要卡着整点齐步走。</li>
+            <li>只看<strong>当天的新帖</strong>；每个新帖<strong>只查一次</strong>，查过的记入已检查清单，不重复打开。</li>
+            <li>打开每个新帖前再<strong>随机暂停 2–5 秒</strong>，节奏放缓，避免短时间高频访问。</li>
+            <li><strong>标题里带码的帖子要全文细读</strong>：码可能藏在正文中间，只扫标题和首段容易漏。</li>
+            <li>一轮没查完的帖子<strong>不要记入已检查清单</strong>，留到下一轮补查，不能当作查过了。</li>
+            <li>发现原样贴出的<strong>完整码</strong>，直接进入第 3 步测试；发现<strong>带掩码的码</strong>，走第 2 步。</li>
+          </ul>
+          <div class="callout warn"><b>状态要随时说得清：</b>监控是否在跑、当前查到哪一帖、已检查清单里有多少、还没补查的有几个。任何一项说不清，先停下来对账，再继续。</div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="sec" id="s2">
+        <div class="card">
+          <div class="sec-head">
+            <span class="num">2</span>
+            <h3>带掩码的码：只原样通知</h3>
+            <span class="tag">不补全 · 不猜 · 不试</span>
+          </div>
+          <p>帖子里经常出现的不是完整码，而是被发帖人打了掩码的码，例如 <code>abcd12xxwxyz7890</code>（示例，<code>xx</code> 是被遮住的字符）。这一环的规则非常简单：<strong>看到什么样，就原样转达什么样。</strong></p>
+          <ul class="rules">
+            <li>带掩码的码<strong>逐字复制、原样通知</strong>，连掩码位置都不改动。</li>
+            <li class="no"><strong>不补全</strong>：不根据格式、习惯或概率去推测被遮住的字符。</li>
+            <li class="no"><strong>不试错</strong>：两个 <code>x</code> 就是 256 种组合，一个一个试等于猜码——这条线不碰。</li>
+            <li>通知时带上<strong>出处</strong>：帖子标题、发布时间，方便回溯原文核对。</li>
+            <li>掩码码到此为止，不进入测试和注册环节；后续处理走 2.5 的转交流程。</li>
+          </ul>
+          <div class="callout danger"><b>为什么这么严：</b>猜出来的码即使蒙对了字符，也无法确认来源；拿猜测的码去注册页反复试错，会触发网站的频率限制。原样通知是这条链路上唯一诚实的做法。</div>
+        </div>
+      </section>
+
+      <!-- STEP 2.5 -->
+      <section class="sec" id="s25">
+        <div class="card">
+          <div class="sec-head">
+            <span class="num">2.5</span>
+            <h3>发出与收回：中间转交环节</h3>
+            <span class="tag">只转交 · 不加工</span>
+          </div>
+          <p>插在第 2 步和第 3 步之间：收到的码先<strong>原样发出</strong>（邮箱或网盘），在外部处理后<strong>收回</strong>，验过格式才放行去测试。这一环只做搬运，不做任何补全或修改。</p>
+          <div class="pipe">
+            <div class="node"><div class="nt">收到码</div><div class="nd">来自监控或通知，原样保留</div></div>
+            <span class="arrow">→</span>
+            <div class="node"><div class="nt">发出</div><div class="nd">邮箱：一行一个发出去<br />网盘：下载成文件再上传</div></div>
+            <span class="arrow">→</span>
+            <div class="node"><div class="nt">收回</div><div class="nd">从邮箱或网盘取回处理后的码</div></div>
+            <span class="arrow">→</span>
+            <div class="node"><div class="nt">验格式</div><div class="nd">完整 16 位才放行去第 3 步</div></div>
+          </div>
+          <ul class="rules">
+            <li>发出时<strong>逐字原样</strong>：一个码一行，不合并、不改序、不加说明文字混在码里。</li>
+            <li>收回后先验格式：<strong>满 16 位且不含掩码字符</strong>的，才放行到第 3 步。</li>
+            <li class="no">收回来的如果<strong>还带掩码</strong>，直接拦下，退回第 2 步处理，不许进入测试。</li>
+            <li>发出和收回都要留记录：什么时间、发了几个、回来几个，对不上就先查记录。</li>
+          </ul>
+          <p>下面这个格式检查工具就是这一环的验格式动作，可以直接用：粘贴收回的码，一行一个，它只判断「完整 / 带掩码 / 格式不对」，不做任何补全。</p>
+
+          <div class="tool">
+            <textarea id="codeIn" placeholder="把码粘贴到这里，一行一个，例如：&#10;abcd1234wxyz7890&#10;abcd12xxwxyz7890" aria-label="粘贴邀请码，一行一个"></textarea>
+            <div class="btnrow">
+              <button class="btn-main" id="checkBtn" type="button">检查格式</button>
+              <button class="btn-ghost" id="clearBtn" type="button">清空</button>
+              <span class="hint">只在本页内检查，不发送、不保存。</span>
+            </div>
+            <div id="checkOut">
+              <p id="checkSummary"></p>
+              <div id="checkLines"></div>
+              <button class="btn-ghost" id="copyClean" type="button">复制可放行的完整码</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="sec" id="s3">
+        <div class="card">
+          <div class="sec-head">
+            <span class="num">3</span>
+            <h3>单独测试邀请码</h3>
+            <span class="tag">一个一个测 · 测完记结果</span>
+          </div>
+          <p>只有<strong>完整的 16 位码</strong>才能进这一环。测试的方法只有一个：在注册页把码输进去，过验证码，点检查，<strong>看注册页怎么判</strong>。没有批量接口，也没有捷径。</p>
+          <ul class="rules">
+            <li>测之前先过一遍<strong>格式</strong>：不是 16 位、含掩码字符的，直接退回，不浪费一次测试。</li>
+            <li><strong>一个一个测</strong>：输码 → 过验证码 → 点检查 → 记下判定，再测下一个。</li>
+            <li>每个码的判定都要<strong>当场记录</strong>：码、测试时间、注册页的原样回复，四者缺一不可。</li>
+            <li>优先测<strong>最有可能的几个</strong>（来源新、发帖人可信的排前面），不要按收到顺序无差别硬测。</li>
+            <li class="no"><strong>不批量、不多开</strong>：几百个码也不能并行试。每个码都要单独过验证码，多开窗口只会更容易触发限流甚至封 IP，验证码一个也省不掉。</li>
+            <li>一旦测出<strong>能用</strong>的，立刻停下，转第 4 步注册，剩下的不用再测。</li>
+          </ul>
+          <div class="callout warn"><b>关于数量：</b>手上有 500、600 个码是常态，但测试速度受验证码和网站频率限制，本来就是慢工。正确的策略不是测完所有，而是<strong>排好优先级，测到一个能用的就收工</strong>。</div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="sec" id="s4">
+        <div class="card">
+          <div class="sec-head">
+            <span class="num">4</span>
+            <h3>测试完能用，再去注册</h3>
+            <span class="tag">判定为准 · 不能用就停手</span>
+          </div>
+          <p>注册是整条链的终点，门槛也最明确：<strong>只有注册页在第 3 步判定「有效 / 能用」的码，才拿去注册。</strong>注册页一共会给出四种结果，每种的下一步都不同：</p>
+          <div class="results">
+            <div class="row">
+              <div class="verdict"><span class="badge ok"></span>有效</div>
+              <div class="next"><strong>立即注册。</strong>用准备好的用户名和邮箱完成注册，注册成功后整条链结束，其余码不再测。</div>
+            </div>
+            <div class="row">
+              <div class="verdict"><span class="badge used"></span>已被使用</div>
+              <div class="next"><strong>放弃这个码。</strong>记录结果，回到第 3 步测下一个优先级的码。</div>
+            </div>
+            <div class="row">
+              <div class="verdict"><span class="badge bad"></span>无效</div>
+              <div class="next"><strong>放弃这个码。</strong>先核对一遍有没有输错字符；确认无误仍无效的，记录后不再重试。</div>
+            </div>
+            <div class="row">
+              <div class="verdict"><span class="badge old"></span>已过期</div>
+              <div class="next"><strong>放弃这个码。</strong>记录结果即可，过期码没有恢复的办法，不要反复提交。</div>
+            </div>
+          </div>
+          <ul class="rules">
+            <li>注册用的<strong>用户名和邮箱各自准备</strong>，密码通过安全方式保存，不要写进任何手册或清单里。</li>
+            <li class="no">判定<strong>不能用就停手</strong>：不换着法子反复提交同一个码，不拿带掩码的码来注册页碰运气。</li>
+            <li>注册成功后回头补齐记录：用的哪个码、什么时间、判定原文是什么，整条链才算闭环。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- AUTO INTAKE -->
+      <section class="sec">
+        <div class="card">
+          <div class="sec-head">
+            <span class="num">＋</span>
+            <h3>自动收码：VPS → 邮箱 → 定时取码</h3>
+            <span class="tag">每 3 分钟查一次</span>
+          </div>
+          <p>除了盯版块，还可以让外部的 VPS 把收集到的码<strong>发到邮箱</strong>，再由助手<strong>每 3 分钟查一次邮箱</strong>取码。邮箱不会主动推送消息，所谓「第一时间」就是把轮询间隔设短——3 分钟一轮，新码基本不会压太久。</p>
+          <div class="pipe">
+            <div class="node"><div class="nt">VPS</div><div class="nd">把码发到指定邮箱，一行一个</div></div>
+            <span class="arrow">→</span>
+            <div class="node"><div class="nt">邮箱</div><div class="nd">作为中转站，只存不用改</div></div>
+            <span class="arrow">→</span>
+            <div class="node"><div class="nt">每 3 分钟取码</div><div class="nd">取回后按格式分流：完整的去测，带掩码的原样通知</div></div>
+          </div>
+          <ul class="rules">
+            <li>发码格式统一：<strong>一行一个，原样贴出</strong>，不加掩码、不混说明文字。</li>
+            <li>取回来的码不直接测：先走 2.5 的<strong>验格式</strong>，再进第 3 步。</li>
+            <li>取码节奏和测试节奏是两回事：取可以勤，<strong>测仍然一个一个来</strong>，测出能用的就停。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SETUP -->
+      <section class="sec">
+        <h2>用之前，先把这几处换成你自己的</h2>
+        <p class="sub">本分享版已删除全部个人信息。以下位置在原文里是具体账号，分享版统一留空，使用前自行填入——只填在你自己的副本里，不要回填进分享版。</p>
+        <div class="card">
+          <ol class="fill">
+            <li>接收码的邮箱：<span class="slot">你的邮箱</span>（VPS 发码、2.5 发出环节都用它）</li>
+            <li>转交用的网盘：<span class="slot">你的网盘</span>（2.5 发出环节的备选通道）</li>
+            <li>注册用的用户名：<span class="slot">你的用户名</span>（只在第 4 步注册时用）</li>
+            <li>注册用的邮箱：<span class="slot">你的注册邮箱</span>（可以与收码邮箱不同）</li>
+            <li>注册密码：通过安全录入保存，<strong>永远不要写进手册、清单或聊天记录</strong>。</li>
+          </ol>
+        </div>
+      </section>
+
+      <footer>
+        t66y 邀请码监控手册 · 分享版<br />
+        五个环节：监控 → 原样通知 → 发出与收回 → 单独测试 → 注册。全程只认一句：完整 ≠ 能用，只有注册页的判定算数。
+      </footer>
+
+    </div>
+
+    <script>
+      (function () {
+        var input = document.getElementById('codeIn');
+        var out = document.getElementById('checkOut');
+        var linesBox = document.getElementById('checkLines');
+        var summary = document.getElementById('checkSummary');
+        var copyBtn = document.getElementById('copyClean');
+        var cleanCodes = [];
+
+        function judge(raw) {
+          var s = raw.trim();
+          if (!s) return null;
+          var masked = /x|\*|×/i.test(s) || s.indexOf('某') !== -1;
+          if (masked) {
+            return { code: s, st: 'masked', label: '带掩码', why: '含掩码字符，拦下：只原样通知，不进入测试。' };
+          }
+          if (s.length !== 16) {
+            return { code: s, st: 'bad', label: '格式不对', why: '长度是 ' + s.length + ' 位，不是 16 位，退回核对。' };
+          }
+          if (!/^[A-Za-z0-9]+$/.test(s)) {
+            return { code: s, st: 'bad', label: '格式不对', why: '含有字母数字以外的字符，退回核对。' };
+          }
+          return { code: s, st: 'ok', label: '完整', why: '格式通过，可放行到第 3 步逐个测试——能否使用仍以注册页判定为准。' };
+        }
+
+        document.getElementById('checkBtn').addEventListener('click', function () {
+          var rows = input.value.split(/\r?\n/).map(judge).filter(Boolean);
+          linesBox.innerHTML = '';
+          cleanCodes = [];
+          var nOk = 0, nMasked = 0, nBad = 0;
+          rows.forEach(function (r) {
+            if (r.st === 'ok') { nOk++; cleanCodes.push(r.code); }
+            else if (r.st === 'masked') { nMasked++; }
+            else { nBad++; }
+            var div = document.createElement('div');
+            div.className = 'line';
+            var st = document.createElement('span');
+            st.className = 'st ' + r.st;
+            st.textContent = r.label;
+            var body = document.createElement('span');
+            var c = document.createElement('code');
+            c.textContent = r.code;
+            var why = document.createElement('span');
+            why.className = 'why';
+            why.textContent = ' ' + r.why;
+            body.appendChild(c);
+            body.appendChild(why);
+            div.appendChild(st);
+            div.appendChild(body);
+            linesBox.appendChild(div);
+          });
+          if (!rows.length) {
+            summary.textContent = '没有读到任何码：请一行一个粘贴。';
+          } else {
+            summary.textContent = '共 ' + rows.length + ' 个：完整 ' + nOk + ' 个 · 带掩码 ' + nMasked + ' 个 · 格式不对 ' + nBad + ' 个。';
+          }
+          copyBtn.style.display = cleanCodes.length ? 'inline-block' : 'none';
+          copyBtn.textContent = '复制可放行的完整码（' + cleanCodes.length + ' 个）';
+          out.style.display = 'block';
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', function () {
+          input.value = '';
+          out.style.display = 'none';
+          input.focus();
+        });
+
+        copyBtn.addEventListener('click', function () {
+          var text = cleanCodes.join('\n');
+          function done() {
+            copyBtn.textContent = '已复制，去第 3 步逐个测试';
+            setTimeout(function () {
+              copyBtn.textContent = '复制可放行的完整码（' + cleanCodes.length + ' 个）';
+            }, 2200);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, done);
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta);
+            done();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

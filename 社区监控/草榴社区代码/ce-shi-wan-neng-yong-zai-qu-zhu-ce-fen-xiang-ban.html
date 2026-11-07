@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>测试完能用再去注册（分享版）</title>
+    <style>
+      :root {
+        --bg: #f7f8f7;
+        --surface: #ffffff;
+        --surface-2: #eef2ef;
+        --ink: #17211b;
+        --ink-2: #4b5a51;
+        --ink-3: #718176;
+        --line: #d9e0da;
+        --green: #0f6b4a;
+        --green-soft: #e2f0e8;
+        --amber: #9a6206;
+        --amber-soft: #fbf0d7;
+        --red: #a83226;
+        --red-soft: #fbe9e6;
+        --blue: #1d4f73;
+        --blue-soft: #e3eef5;
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101512;
+          --surface: #181f1b;
+          --surface-2: #202a24;
+          --ink: #e9efea;
+          --ink-2: #b3c0b6;
+          --ink-3: #87988b;
+          --line: #2e3a32;
+          --green: #4fc38f;
+          --green-soft: #173529;
+          --amber: #e8b34b;
+          --amber-soft: #3a2e12;
+          --red: #f08a7d;
+          --red-soft: #3d1f1a;
+          --blue: #7db8dd;
+          --blue-soft: #1a2f3f;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 28px 20px 64px; }
+      h1, h2 { font-family: "Songti SC", "STSong", "Noto Serif SC", serif; font-weight: 700; line-height: 1.3; }
+      h1 { font-size: 30px; margin: 0 0 10px; letter-spacing: .01em; }
+      h2 { font-size: 21px; margin: 0 0 14px; }
+      p { margin: 0 0 12px; }
+      .lede { font-size: 17px; color: var(--ink-2); max-width: 40em; }
+      .lede strong { color: var(--ink); }
+
+      /* 顺序锁 */
+      .lock {
+        margin: 22px 0 8px;
+        border: 1.5px solid var(--green);
+        background: var(--green-soft);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        display: flex; gap: 14px; align-items: flex-start;
+      }
+      .lock .badge {
+        flex: none; font-size: 13px; font-weight: 700; color: #fff;
+        background: var(--green); border-radius: 999px; padding: 3px 10px; margin-top: 2px;
+      }
+      @media (prefers-color-scheme: dark) { .lock .badge { color: #0c1510; } }
+      .lock p { margin: 0; font-size: 15.5px; }
+      .chain {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        margin: 14px 0 0; font-size: 14px; color: var(--ink-2);
+      }
+      .chain .node {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 999px; padding: 4px 12px;
+      }
+      .chain .node.now { border-color: var(--green); color: var(--green); font-weight: 700; }
+      .chain .arr { color: var(--ink-3); }
+      .chain-note { margin: 10px 0 0; font-size: 14px; color: var(--ink-2); }
+      .chain-note b { color: var(--amber); }
+
+      /* 核心区分：完整 ≠ 能用 */
+      .principle {
+        margin-top: 18px; border: 1.5px solid var(--amber);
+        background: var(--amber-soft); border-radius: var(--radius); padding: 18px;
+      }
+      .principle h2 { font-size: 20px; margin-bottom: 8px; }
+      .principle p { margin: 0 0 8px; font-size: 15.5px; color: var(--ink-2); }
+      .principle p:last-child { margin-bottom: 0; }
+      .principle p b, .principle strong { color: var(--ink); }
+      .principle .formula {
+        display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0;
+        font-size: 15px; font-weight: 700;
+      }
+      .principle .formula span {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 5px 11px;
+      }
+      .principle .formula .ne { border: none; background: transparent; padding: 0; color: var(--amber); font-size: 19px; }
+
+      section { margin-top: 40px; }
+      .sec-note { color: var(--ink-2); font-size: 15px; margin-top: -6px; }
+
+      /* 五步流程 */
+      .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+      .steps li {
+        position: relative;
+        display: flex; gap: 16px;
+        padding: 16px 0 16px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .steps li:last-child { border-bottom: none; }
+      .steps .num {
+        counter-increment: step;
+        flex: none; width: 38px; height: 38px; border-radius: 50%;
+        border: 1.5px solid var(--green); color: var(--green);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 16px; background: var(--surface);
+      }
+      .steps .num::before { content: counter(step); }
+      .steps h3 { margin: 4px 0 4px; font-size: 17px; }
+      .steps p { margin: 0; color: var(--ink-2); font-size: 15px; }
+      .steps p b { color: var(--ink); }
+      .tag {
+        display: inline-block; font-size: 12.5px; font-weight: 700;
+        border-radius: 6px; padding: 1px 8px; margin-left: 8px; vertical-align: 2px;
+      }
+      .tag.stop { background: var(--red-soft); color: var(--red); }
+      .tag.go { background: var(--green-soft); color: var(--green); }
+
+      /* 预检工具 */
+      .tool {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 20px;
+      }
+      label.flabel { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+      .row { display: flex; gap: 10px; flex-wrap: wrap; }
+      input[type="text"] {
+        flex: 1 1 260px; min-width: 0;
+        font: inherit; font-size: 16px;
+        padding: 11px 14px; border-radius: 10px;
+        border: 1.5px solid var(--line); background: var(--bg); color: var(--ink);
+      }
+      input[type="text"]:focus { outline: 2px solid var(--green); outline-offset: 1px; border-color: transparent; }
+      button {
+        font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+        border-radius: 10px; padding: 11px 20px; border: 1.5px solid transparent;
+      }
+      .btn-main { background: var(--green); color: #fff; }
+      @media (prefers-color-scheme: dark) { .btn-main { color: #0c1510; } }
+      .btn-ghost { background: transparent; color: var(--ink-2); border-color: var(--line); }
+      button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+      .verdict { display: none; margin-top: 16px; border-radius: 10px; padding: 14px 16px; font-size: 15px; }
+      .verdict.show { display: block; }
+      .verdict h4 { margin: 0 0 4px; font-size: 16px; }
+      .verdict p { margin: 0; }
+      .verdict.ok { background: var(--green-soft); border: 1px solid var(--green); }
+      .verdict.masked { background: var(--amber-soft); border: 1px solid var(--amber); }
+      .verdict.bad { background: var(--red-soft); border: 1px solid var(--red); }
+      .verdict .next { margin-top: 10px; }
+      .hint { font-size: 13.5px; color: var(--ink-3); margin-top: 10px; }
+
+      /* 判定标准 */
+      .judge { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 620px) { .judge { grid-template-columns: 1fr; } }
+      .judge .box { border-radius: var(--radius); padding: 18px; border: 1px solid var(--line); background: var(--surface); }
+      .judge .box.yes { border-top: 4px solid var(--green); }
+      .judge .box.no { border-top: 4px solid var(--red); }
+      .judge .box.used { border-top: 4px solid var(--amber); }
+      .judge .box.expired { border-top: 4px solid var(--blue); }
+      .judge .box .heard { font-size: 13.5px; color: var(--ink-3); margin: -4px 0 10px; }
+      .judge h3 { margin: 0 0 10px; font-size: 17px; }
+      .judge ul { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: 15px; }
+      .judge li { margin-bottom: 6px; }
+      .judge .act { margin-top: 10px; font-size: 15px; }
+      .judge .act b { color: var(--ink); }
+
+      /* 注册前核对 */
+      .checklist { list-style: none; margin: 0; padding: 0; }
+      .checklist li {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 10px; padding: 13px 16px; margin-bottom: 10px;
+        font-size: 15.5px;
+      }
+      .checklist .tick {
+        flex: none; width: 22px; height: 22px; margin-top: 2px;
+        border-radius: 6px; border: 1.5px solid var(--green);
+        color: var(--green); display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 700;
+      }
+      .checklist li span { color: var(--ink-2); }
+      .checklist li span b { color: var(--ink); }
+
+      /* 记录 */
+      .records-empty { color: var(--ink-3); font-size: 15px; padding: 6px 0; }
+      .rec {
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+      }
+      .rec .top { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; justify-content: space-between; }
+      .rec code {
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 15px; word-break: break-all;
+      }
+      .status { font-size: 13px; font-weight: 700; border-radius: 999px; padding: 2px 10px; flex: none; }
+      .status.wait { background: var(--blue-soft); color: var(--blue); }
+      .status.usable { background: var(--green-soft); color: var(--green); }
+      .status.done { background: var(--green); color: #fff; }
+      @media (prefers-color-scheme: dark) { .status.done { color: #0c1510; } }
+      .status.dead { background: var(--red-soft); color: var(--red); }
+      .status.used { background: var(--amber-soft); color: var(--amber); }
+      .status.invalid { background: var(--red-soft); color: var(--red); }
+      .status.expired { background: var(--blue-soft); color: var(--blue); }
+      .rec .note { margin: 8px 0 0; font-size: 14px; color: var(--ink-2); }
+      .rec .ops { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+      .rec .ops button { font-size: 13.5px; padding: 6px 12px; border-radius: 8px; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); font-weight: 600; }
+      .rec .ops button.primary { background: var(--green); border-color: var(--green); color: #fff; }
+      @media (prefers-color-scheme: dark) { .rec .ops button.primary { color: #0c1510; } }
+
+      /* 异常 */
+      .faq { border-top: 1px solid var(--line); }
+      .faq div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+      .faq h3 { margin: 0 0 4px; font-size: 16px; }
+      .faq p { margin: 0; color: var(--ink-2); font-size: 15px; }
+
+      footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13.5px; }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <h1>先测通，再注册 —— 顺序不能反</h1>
+      <p class="lede">这个空间只管最后一程：<strong>拿到一个完整邀请码之后，先去注册页手动试一次，确认页面接受、能往下走，再回来正式注册。</strong>没测通之前，不填正式资料、不提交注册。测一次就够，不反复试、不猜码。<strong>特别记住：完整不等于能用 —— 码写全了、位数对了、预检过了，都不算能用，只有注册页亲口说「有效」才算数。</strong></p>
+
+      <div class="lock">
+        <span class="badge">铁规矩</span>
+        <p>带掩码的码（中间有 <b>*</b>、<b>×</b>、<b>…</b> 这类遮住的字符）<b>永远停在第一步「原样登记」</b>：不进预检之后的任何一步、不测试、更不注册、不猜不补，只把原文原样登记通知。能走到这一页往下走的，只能是完整的码 —— 而且完整也只是拿到了去测的资格。</p>
+      </div>
+
+      <div class="chain" aria-label="三个空间的分工">
+        <span class="node">① 原样登记：收到码先登记</span>
+        <span class="arr">→</span>
+        <span class="node">② 测试：格式预检 + 注册页试一次</span>
+        <span class="arr">→</span>
+        <span class="node now">③ 本页：注册页说有效，才正式注册</span>
+      </div>
+      <p class="chain-note">分岔在这里：<b>带掩码的码到 ① 就结束</b>，不往 ②③ 走；完整的码走完 ②，也只有拿到「有效」这一种结果才能进 ③。</p>
+
+      <div class="principle" role="note" aria-label="完整不等于能用">
+        <h2>完整 ≠ 能用，只有注册页的判定算数</h2>
+        <div class="formula" aria-hidden="true">
+          <span>16 位都写全了</span><span class="ne">≠</span><span>能用</span>
+          <span>本页预检通过</span><span class="ne">≠</span><span>能用</span>
+          <span>注册页提示有效</span><span class="ne">=</span><span>能用</span>
+        </div>
+        <p>单看一个码本身，<b>看不出它能不能用</b>。长度、字符、格式只能说明它「完整」、可以拿去测一次；它有没有被人用掉、是不是真的存在、是不是已经过期，这些信息只在论坛那边，<b>只有注册页试过一次、给出判定，才有答案</b>。</p>
+        <p>所以本页的预检结论永远只是「完整，可以去测」或「不完整 / 带掩码，停」，<b>绝不下「能用」的结论</b>。试完之后按下面四种结果对号入座，一种结果只有一条下一步，不混用。</p>
+      </div>
+
+      <section>
+        <h2>五步走完，才算注册</h2>
+        <ol class="steps">
+          <li>
+            <span class="num"></span>
+            <div>
+              <h3>拿到完整码，先在本页预检</h3>
+              <p>把码原样粘到下面的预检框里。预检只看格式：<b>有没有被掩码遮住、长度对不对、有没有多余空格</b>。预检不联网、不向论坛发任何请求，<b>通过也只代表「完整、可以去测」，不代表能用</b>。带掩码的在这一步就被拦下，退回原样登记，不往下走。</p>
+            </div>
+          </li>
+          <li>
+            <span class="num"></span>
+            <div>
+              <h3>去注册页，只试这一次<span class="tag go">手动</span></h3>
+              <p>预检通过后，打开论坛注册页，<b>只在邀请码那一栏</b>填入这个码，看页面反应。这一步先不填用户名、邮箱、密码 —— 只是验码。</p>
+            </div>
+          </li>
+          <li>
+            <span class="num"></span>
+            <div>
+              <h3>只认注册页给出的四种结果</h3>
+              <p>试完只有四种可能：<b>有效、已被使用、无效、已过期</b>。以注册页的实际提示文字为准对号入座，不要自己推断 —— 比如码看着很新，不等于没过期；格式全对，不等于不是无效码。四种结果的下一步见下面对照表。</p>
+            </div>
+          </li>
+          <li>
+            <span class="num"></span>
+            <div>
+              <h3>不是「有效」，就停，不重试<span class="tag stop">停手</span></h3>
+              <p>已被使用、无效、已过期 —— 这三种都是终局：同一个码<b>不要反复提交试运气</b>，更不要改动其中任何字符去凑。在下面按注册页给的原话记成对应的那一种，关掉这一条，等下一个新码。</p>
+            </div>
+          </li>
+          <li>
+            <span class="num"></span>
+            <div>
+              <h3>只有「有效」，才正式注册<span class="tag go">最后一步</span></h3>
+              <p>四种结果里只有这一种能往下走。回到注册页，同一个码不要动，按「注册前核对」逐项填完再提交。提交成功后，在下面把这条标成「已注册」，这一码就此关闭，不再复用。</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>第一步：格式预检（只判完整，不判能用）</h2>
+        <p class="sec-note">把收到的完整码原样粘进来，先过这一关，再去注册页。带掩码的不要粘进来测 —— 它停在原样登记那一步，粘进来也只会被拦下。</p>
+        <div class="tool">
+          <label class="flabel" for="codeInput">邀请码（原样粘贴，不要改任何字符）</label>
+          <div class="row">
+            <input type="text" id="codeInput" placeholder="例如：Ab3dEf9Gh2Kx" autocomplete="off" autocapitalize="off" spellcheck="false" />
+            <button class="btn-main" id="checkBtn" type="button">预检</button>
+            <button class="btn-ghost" id="clearBtn" type="button">清空</button>
+          </div>
+          <div class="verdict" id="verdict" role="status"></div>
+          <p class="hint">预检只判断格式，不验证真伪，更不判断能不能用 —— 就算显示 16 位、无掩码、字符都对，也只是「完整」。码到底能不能用，以你在注册页手动试的那一次、页面给出的判定为准。</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>第三步：注册页的四种结果，分别怎么办</h2>
+        <p class="sec-note">在注册页试一次之后，只会出现下面四种结果。认准页面提示的原话，对应做那一件事 —— 不要跨格处理：比如「已过期」不要当「无效」去改字符重输，「已被使用」也不要再试第二次。</p>
+        <div class="judge">
+          <div class="box yes">
+            <h3>① 有效 —— 唯一能往下走的</h3>
+            <p class="heard">页面怎么说：通过校验 / 可以使用 / 无报错并放行下一步</p>
+            <ul>
+              <li>邀请码一栏没有红色报错</li>
+              <li>页面允许继续填用户名、邮箱等资料</li>
+            </ul>
+            <p class="act"><b>下一步：</b>不要退出、不要换码、不要隔太久 —— 就在这个码上按下方核对清单一次填完并提交。提交成功后回记录里标「已注册」，此码关闭。</p>
+          </div>
+          <div class="box used">
+            <h3>② 已被使用 —— 别人先用掉了</h3>
+            <p class="heard">页面怎么说：该邀请码已被使用 / 已经被注册过</p>
+            <ul>
+              <li>码本身可能是真的，但名额已经没了</li>
+              <li>再试多少次，结果都不会变</li>
+            </ul>
+            <p class="act"><b>下一步：</b>立即停手，不重试、不等一等再试。在记录里标「已被使用」关掉这一条，等下一个新码。</p>
+          </div>
+          <div class="box no">
+            <h3>③ 无效 —— 这个码不成立</h3>
+            <p class="heard">页面怎么说：邀请码无效 / 不存在 / 格式错误</p>
+            <ul>
+              <li>先回原帖逐字核对一次：是不是复制错、漏字、串行</li>
+              <li>核对无误页面仍说无效，就是码本身不成立</li>
+            </ul>
+            <p class="act"><b>下一步：</b>只允许回原帖核对原文这一次；确认没抄错后就停，<b>不改字符、不猜、不凑</b>。在记录里标「无效」关掉，等下一个新码。若发现是自己抄错了，按正确原文从第一步重新走一遍。</p>
+          </div>
+          <div class="box expired">
+            <h3>④ 已过期 —— 来晚了</h3>
+            <p class="heard">页面怎么说：邀请码已过期 / 已失效 / 超过有效期</p>
+            <ul>
+              <li>码曾经可能有效，但时间窗口已经过了</li>
+              <li>过期不会因为重试而恢复</li>
+            </ul>
+            <p class="act"><b>下一步：</b>停手，不重试、不试图「激活」。在记录里标「已过期」关掉这一条，等下一个新码 —— 下次拿到新码尽快去测，别攒着。</p>
+          </div>
+        </div>
+        <p class="sec-note" style="margin-top:14px;">一句话收尾：<b>只有 ① 有效进注册；②③④ 全部停手关单、等下一个码。</b>带掩码的连这四种结果都不会有 —— 它根本不进注册页，永远停在原样登记。</p>
+      </section>
+
+      <section>
+        <h2>第五步之前：正式注册核对</h2>
+        <p class="sec-note">只有注册页明确给出「有效」、页面放行之后，才看这一节。提交前逐项对一遍：</p>
+        <ul class="checklist">
+          <li><span class="tick">✓</span><span><b>注册页的判定确实是「有效」</b> —— 不是自己觉得完整、觉得应该能用；没看到有效提示，就回到四种结果那一节对号，不要硬提交。</span></li>
+          <li><span class="tick">✓</span><span><b>邀请码还是测通的那一个</b> —— 没换码、没多敲空格、没改大小写。</span></li>
+          <li><span class="tick">✓</span><span><b>用户名和邮箱提前想好再填</b> —— 不要临场现编，编错了后续找回很麻烦；邮箱要填自己能收信的那个。</span></li>
+          <li><span class="tick">✓</span><span><b>密码只在注册页里输入</b> —— 自己记牢或存进自己的密码管理器，不写在本页、不写在任何清单里。</span></li>
+          <li><span class="tick">✓</span><span><b>页面没有报错再点提交</b> —— 有红字先停下看清楚，不要连点提交。</span></li>
+          <li><span class="tick">✓</span><span><b>注册成功后回来标记</b> —— 在下方记录里点「已注册」，这个码从此作废关闭。</span></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>本轮记录</h2>
+        <p class="sec-note">预检通过（只是完整）的码记在这里，去注册页试一次后，按页面给的原话标结果：待测试 → 有效·待注册 → 已注册；或直接标成已被使用 / 无效 / 已过期关单。带掩码的码不要记到这里 —— 它只留在原样登记那边。记录只在本次打开期间保留，关掉页面就清空。</p>
+        <div id="records">
+          <p class="records-empty" id="recordsEmpty">还没有记录。先在上面预检一个完整码，通过后点「记下这条」。</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>遇到这几种情况怎么办</h2>
+        <div class="faq">
+          <div>
+            <h3>码是完整的 16 位，为什么还不能直接注册？</h3>
+            <p>因为完整只说明位数和字符都齐了，不说明它没被人用过、不是假的、没过期。这三件事本页查不了，只有注册页试一次才知道。没拿到「有效」之前，一律按未确认处理，不填正式资料。</p>
+          </div>
+          <div>
+            <h3>测的时候是有效，回去注册时却提示已被使用</h3>
+            <p>说明这个码在中间被别人先注册掉了。按「已被使用」处理：不要再试，标「已被使用」关单，等下一个码 —— 邀请码先到先得，抢没了就是没了。所以测到有效后不要拖，尽快完成注册。</p>
+          </div>
+          <div>
+            <h3>提示已过期，是不是等一等、再试一次就好了？</h3>
+            <p>不会。已过期是终局，再试结果不变。标「已过期」关单，等下一个新码；下次拿到码尽快去测。</p>
+          </div>
+          <div>
+            <h3>只差一两个字符看不清</h3>
+            <p>那它就是带掩码 / 不完整的码。不要猜、不要补、不要逐个试，它永远停在原样登记那一步：只把原文原样登记通知，等完整的码出现。</p>
+          </div>
+          <div>
+            <h3>注册页打不开或一直报错</h3>
+            <p>这不是码的问题，先停。不要在报错的页面上反复提交邀请码，等页面恢复正常后再从第一步重新走。</p>
+          </div>
+          <div>
+            <h3>注册提交后没收到确认</h3>
+            <p>先查邮箱（含垃圾箱）再决定，不要因为没收到信就换个码重新注册一遍，避免重复占名。</p>
+          </div>
+        </div>
+      </section>
+
+      <footer>流程 recap：收到码 → 原样登记（带掩码的到此为止，永远不往下）→ 本页预检只判完整 → 注册页手动试一次定生死 → 只有「有效」才正式注册 → 标为已注册关闭；已被使用 / 无效 / 已过期一律停手关单、等下一个码。</footer>
+    </main>
+
+    <script>
+      (function () {
+        var input = document.getElementById('codeInput');
+        var verdict = document.getElementById('verdict');
+        var checkBtn = document.getElementById('checkBtn');
+        var clearBtn = document.getElementById('clearBtn');
+        var recordsBox = document.getElementById('records');
+        var recordsEmpty = document.getElementById('recordsEmpty');
+        var records = [];
+        var lastOkCode = '';
+
+        var MASK_CHARS = ['*', '＊', '×', '✕', '✖', '•', '·', '…', '?', '？', 'x', 'X'];
+        // x/X 只在成串出现（如 xxx、XX）时算掩码，单个字母可能是码本身的字符
+        function hasMask(code) {
+          for (var i = 0; i < code.length; i++) {
+            var c = code.charAt(i);
+            if (c === '*' || c === '＊' || c === '×' || c === '✕' || c === '✖' || c === '•' || c === '…' || c === '?' || c === '？') return true;
+          }
+          if (/(xx+|XX+|Xx|X\*|\*x)/.test(code)) return true;
+          if (/[·]{2,}/.test(code)) return true;
+          return false;
+        }
+
+        function showVerdict(kind, title, body, showAdd) {
+          verdict.className = 'verdict show ' + kind;
+          var html = '<h4>' + title + '</h4><p>' + body + '</p>';
+          if (showAdd) {
+            html += '<div class="next"><button type="button" class="btn-main" id="addRecBtn">记下这条 · 待测试</button></div>';
+          }
+          verdict.innerHTML = html;
+          if (showAdd) {
+            document.getElementById('addRecBtn').addEventListener('click', function () {
+              addRecord(lastOkCode);
+            });
+          }
+        }
+
+        function runCheck() {
+          var raw = input.value;
+          var code = raw.trim();
+          lastOkCode = '';
+          if (!code) {
+            showVerdict('bad', '还没填码', '先把收到的邀请码原样粘进来，再点预检。', false);
+            return;
+          }
+          if (/\s/.test(code)) {
+            showVerdict('bad', '码里混进了空格', '邀请码中间不应该有空格，多半是粘贴时带进来的。删掉空格、核对原样后再预检一次。', false);
+            return;
+          }
+          if (hasMask(code)) {
+            showVerdict('masked', '这是带掩码的码 —— 永远停在原样登记', '里面有被遮住的字符，它不完整，流程到「原样登记」就结束：<b>不进测试、不进注册页、不注册</b>，只把原文原样登记通知即可。不要猜缺失的字符，更不要逐个去试，也不要记到下面的本轮记录里。', false);
+            return;
+          }
+          if (code.length < 6) {
+            showVerdict('bad', '太短了，不像完整的邀请码', '只有 ' + code.length + ' 个字符，多半是复制漏了。回到原帖核对完整原文，复制全了再来。', false);
+            return;
+          }
+          if (!/^[A-Za-z0-9_-]+$/.test(code)) {
+            showVerdict('bad', '含有不常见的字符', '码里出现了字母、数字以外的符号，先回原帖逐字核对，确认不是复制串行或把标点带进来了。', false);
+            return;
+          }
+          lastOkCode = code;
+          showVerdict('ok', '预检通过：只是完整，可以去测 —— 还不算能用', '完整 ≠ 能用，这一步没有验证真伪。下一步：打开论坛注册页，<b>只在邀请码栏填这一个码试一次</b>，先别填其他资料，然后只认页面给的结果 —— <b>有效</b> → 回来标「有效 · 待注册」并正式注册；<b>已被使用 / 无效 / 已过期</b> → 回来按原话标对应的那一种、关单停手，不要重试。', true);
+        }
+
+        var STATUS_NOTE = {
+          usable: '注册页已判有效 —— 尽快按核对清单完成正式注册，不要拖、不要换码。',
+          used: '注册页判已被使用 —— 终局，停手关单，等下一个新码。',
+          invalid: '注册页判无效 —— 已回原帖核对无误就停手，不改字符、不猜码，等下一个新码。',
+          expired: '注册页判已过期 —— 终局，不会因重试恢复，关单等下一个新码。',
+          done: '已用这个码完成正式注册 —— 此码关闭，不再复用。'
+        };
+        function statusMeta(s) {
+          if (s === 'wait') return { cls: 'wait', text: '待测试 · 还不知道能不能用' };
+          if (s === 'usable') return { cls: 'usable', text: '有效 · 待注册' };
+          if (s === 'done') return { cls: 'done', text: '已注册 ✓' };
+          if (s === 'used') return { cls: 'used', text: '已被使用 ✕' };
+          if (s === 'invalid') return { cls: 'invalid', text: '无效 ✕' };
+          if (s === 'expired') return { cls: 'expired', text: '已过期 ✕' };
+          return { cls: 'dead', text: '不能用' };
+        }
+
+        function renderRecords() {
+          recordsEmpty.style.display = records.length ? 'none' : 'block';
+          var olds = recordsBox.querySelectorAll('.rec');
+          for (var i = 0; i < olds.length; i++) olds[i].remove();
+          records.forEach(function (r, idx) {
+            var m = statusMeta(r.status);
+            var div = document.createElement('div');
+            div.className = 'rec';
+            var ops = '';
+            if (r.status === 'wait') {
+              ops = '<button type="button" data-act="usable" data-i="' + idx + '">注册页说：有效</button>' +
+                    '<button type="button" data-act="used" data-i="' + idx + '">注册页说：已被使用</button>' +
+                    '<button type="button" data-act="invalid" data-i="' + idx + '">注册页说：无效</button>' +
+                    '<button type="button" data-act="expired" data-i="' + idx + '">注册页说：已过期</button>';
+            } else if (r.status === 'usable') {
+              ops = '<button type="button" class="primary" data-act="done" data-i="' + idx + '">已完成正式注册</button>' +
+                    '<button type="button" data-act="used" data-i="' + idx + '">注册时被提示已被使用</button>' +
+                    '<button type="button" data-act="expired" data-i="' + idx + '">注册时被提示已过期</button>';
+            } else {
+              ops = '<button type="button" data-act="del" data-i="' + idx + '">移除这条</button>';
+            }
+            var note = STATUS_NOTE[r.status] ? '<p class="note"></p>' : '';
+            div.innerHTML = '<div class="top"><code></code><span class="status ' + m.cls + '">' + m.text + '</span></div>' + note + '<div class="ops">' + ops + '</div>';
+            if (STATUS_NOTE[r.status]) div.querySelector('.note').textContent = STATUS_NOTE[r.status];
+            div.querySelector('code').textContent = r.code;
+            recordsBox.appendChild(div);
+          });
+          var btns = recordsBox.querySelectorAll('button[data-act]');
+          for (var j = 0; j < btns.length; j++) {
+            btns[j].addEventListener('click', function () {
+              var i = parseInt(this.getAttribute('data-i'), 10);
+              var act = this.getAttribute('data-act');
+              if (act === 'del') records.splice(i, 1);
+              else records[i].status = act;
+              renderRecords();
+            });
+          }
+        }
+
+        function addRecord(code) {
+          for (var i = 0; i < records.length; i++) {
+            if (records[i].code === code) {
+              records[i].status = 'wait';
+              renderRecords();
+              return;
+            }
+          }
+          records.unshift({ code: code, status: 'wait' });
+          renderRecords();
+        }
+
+        checkBtn.addEventListener('click', runCheck);
+        input.addEventListener('keydown', function (e) { if (e.key === 'Enter') runCheck(); });
+        clearBtn.addEventListener('click', function () {
+          input.value = '';
+          verdict.className = 'verdict';
+          verdict.innerHTML = '';
+          input.focus();
+        });
+        renderRecords();
+      })();
+    </script>
+  </body>
+</html>
