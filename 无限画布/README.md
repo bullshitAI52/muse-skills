@@ -8,7 +8,7 @@
 
 ## 内容类型
 
-- `Muse无限画布实操教程.html`：单个静态教程页面，浏览器直接打开就能看。含成片拆解、五方分工、画布结构图、四步部署（MacBook）、五步实操、可复制的 Agent 接入指令、局限与避坑。
+- `Muse无限画布实操教程.md`：Markdown 教程，GitHub 直接渲染，含成片拆解、五方分工、画布结构、四步部署（MacBook）、五步实操、可复制的 Agent 接入指令、局限与避坑。
 - 本页：用途、步骤与来源说明。
 
 ## 使用步骤
@@ -29,3 +29,12 @@
 - 桥接：[muse2api](https://github.com/czg86389-hub/muse2api)
 
 教程页为原文的整理版（非逐字转载），方法与链接均来自原文。
+
+## 下载
+
+- BeefTV 桌面版 v2.1.6（安装包单个超过 100MB，GitHub 仓库放不下，只放直链）：
+  - macOS（苹果芯片）：https://github.com/glanderness/BeefTV/releases/download/v2.1.6/BeefTV-v2.1.6-darwin-arm64.dmg
+  - macOS（Intel）：https://github.com/glanderness/BeefTV/releases/download/v2.1.6/BeefTV-v2.1.6-darwin-amd64.dmg
+  - Windows：https://github.com/glanderness/BeefTV/releases/download/v2.1.6/BeefTV-v2.1.6-windows-amd64-setup.exe
+  - Linux：https://github.com/glanderness/BeefTV/releases/download/v2.1.6/BeefTV-v2.1.6-linux-amd64.deb
+- muse2api 源码压缩包：直接下载 https://github.com/czg86389-hub/muse2api/archive/refs/heads/main.zip（主分支最新版，237KB；浏览器传不了二进制附件，所以用直链，下载到的是同样的代码）
